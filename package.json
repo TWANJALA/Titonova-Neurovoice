@@ -1,12 +1,15 @@
 {
-  "name": "non-verbal-saas",
+  "name": "titonova-neurovoice",
   "private": true,
   "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "node scripts/lint.mjs",
+    "test": "npm run build",
+    "check": "npm run lint && npm run test"
   },
   "dependencies": {
     "firebase": "^12.5.0",
@@ -15,6 +18,10 @@
     "react-router-dom": "^6.30.3"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.2.2",
+    "autoprefixer": "^10.4.27",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^4.2.2",
     "vite": "^5.4.10"
   }
 }

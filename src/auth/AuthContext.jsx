@@ -10,6 +10,20 @@ import {
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
 import { ROLES, hasAnyRole, normalizeRoles } from "../constants/roles";
+import { trackSignOutEvent } from "../lib/analyticsEvents";
+import { resolveHomePath } from "../lib/authRouting";
+import {
+  createCheckoutSession,
+  createPortalSession,
+  getSubscriptionStatus,
+} from "../lib/billingClient";
+import {
+  BILLING_FEATURES,
+  BILLING_TIERS,
+  getPlanLimit,
+  normalizePlanTier,
+  planHasFeature,
+} from "../lib/billingPlans";
 
 const AuthContext = createContext(null);
 
@@ -20,6 +34,10 @@ async function buildAccessState(user) {
       profile: null,
       roles: [],
       primaryRole: null,
+      homePath: resolveHomePath([]),
+      planTier: BILLING_TIERS.BASIC,
+      subscriptionStatus: "guest",
+      stripeCustomerId: "",
     };
   }
 
@@ -34,15 +52,51 @@ async function buildAccessState(user) {
     console.error("Failed to fetch profile data:", error);
   }
 
+  let serverBilling = null;
+  try {
+    const serverStatus = await getSubscriptionStatus();
+    if (serverStatus?.billing && typeof serverStatus.billing === "object") {
+      serverBilling = serverStatus.billing;
+    }
+  } catch {
+    // Billing status falls back to Firestore profile/claims when billing API is unavailable.
+  }
+
+  const mergedProfile = serverBilling
+    ? {
+        ...(profile ?? {}),
+        billing: {
+          ...(profile?.billing ?? {}),
+          ...serverBilling,
+        },
+      }
+    : profile;
+
   const claimRoles = normalizeRoles(tokenResult.claims.roles ?? tokenResult.claims.role);
-  const profileRoles = normalizeRoles(profile?.roles ?? profile?.role);
+  const profileRoles = normalizeRoles(mergedProfile?.roles ?? mergedProfile?.role);
   const mergedRoles = [...new Set([...claimRoles, ...profileRoles])];
+  const claimPlanTier = tokenResult.claims.planTier ?? tokenResult.claims.plan ?? tokenResult.claims.subscriptionTier;
+  const profilePlanTier =
+    mergedProfile?.billing?.tier ?? mergedProfile?.subscription?.tier ?? mergedProfile?.planTier;
+  const planTier = normalizePlanTier(profilePlanTier || claimPlanTier, BILLING_TIERS.BASIC);
+  const subscriptionStatus = String(
+    mergedProfile?.billing?.status ?? tokenResult.claims.subscriptionStatus ?? "inactive"
+  )
+    .trim()
+    .toLowerCase();
+  const stripeCustomerId = String(
+    mergedProfile?.billing?.stripeCustomerId ?? tokenResult.claims.stripeCustomerId ?? ""
+  ).trim();
 
   return {
     user,
-    profile,
+    profile: mergedProfile,
     roles: mergedRoles,
     primaryRole: mergedRoles[0] ?? null,
+    homePath: resolveHomePath(mergedRoles),
+    planTier,
+    subscriptionStatus: subscriptionStatus || "inactive",
+    stripeCustomerId,
   };
 }
 
@@ -53,6 +107,10 @@ export function AuthProvider({ children }) {
     profile: null,
     roles: [],
     primaryRole: null,
+    homePath: resolveHomePath([]),
+    planTier: BILLING_TIERS.BASIC,
+    subscriptionStatus: "guest",
+    stripeCustomerId: "",
     error: null,
   });
 
@@ -76,6 +134,10 @@ export function AuthProvider({ children }) {
           profile: null,
           roles: [],
           primaryRole: null,
+          homePath: resolveHomePath([]),
+          planTier: BILLING_TIERS.BASIC,
+          subscriptionStatus: "inactive",
+          stripeCustomerId: "",
           error,
         });
       }
@@ -110,6 +172,11 @@ export function AuthProvider({ children }) {
             displayName: displayName?.trim() ?? "",
             role: ROLES.PARENT,
             roles: [ROLES.PARENT],
+            billing: {
+              tier: BILLING_TIERS.BASIC,
+              status: "inactive",
+              updatedAt: serverTimestamp(),
+            },
             createdAt: serverTimestamp(),
           },
           { merge: true }
@@ -118,14 +185,66 @@ export function AuthProvider({ children }) {
         return credential.user;
       },
       signOut: async () => {
+        void trackSignOutEvent({
+          role: state.primaryRole,
+          currentPath: typeof window === "undefined" ? "" : window.location.pathname,
+        });
         await signOut(auth);
       },
+      hasFeature: (featureKey) => planHasFeature(state.planTier, featureKey),
+      getPlanLimit: (limitKey) => getPlanLimit(state.planTier, limitKey),
+      startCheckout: async ({
+        tier = BILLING_TIERS.PRO,
+        successPath = "",
+        cancelPath = "",
+      } = {}) => {
+        if (!state.user) {
+          throw new Error("Sign in is required before starting checkout.");
+        }
+
+        const normalizedTier = normalizePlanTier(tier, BILLING_TIERS.PRO);
+        const origin = typeof window === "undefined" ? "" : window.location.origin;
+        const toAbsoluteUrl = (path, fallbackPath) => {
+          const raw = String(path ?? "").trim();
+          if (!raw) return `${origin}${fallbackPath}`;
+          if (/^https?:\/\//i.test(raw)) return raw;
+          return `${origin}${raw.startsWith("/") ? raw : `/${raw}`}`;
+        };
+
+        return createCheckoutSession({
+          tier: normalizedTier,
+          successUrl: toAbsoluteUrl(
+            successPath,
+            `/pricing?checkout=success&tier=${normalizedTier}&session_id={CHECKOUT_SESSION_ID}`
+          ),
+          cancelUrl: toAbsoluteUrl(
+            cancelPath,
+            `/pricing?checkout=cancel&tier=${normalizedTier}`
+          ),
+        });
+      },
+      openBillingPortal: async ({ returnPath = "/pricing" } = {}) => {
+        if (!state.user) {
+          throw new Error("Sign in is required before opening billing portal.");
+        }
+
+        const origin = typeof window === "undefined" ? "" : window.location.origin;
+        const returnUrl = /^https?:\/\//i.test(String(returnPath ?? ""))
+          ? String(returnPath)
+          : `${origin}${String(returnPath).startsWith("/") ? returnPath : `/${returnPath}`}`;
+
+        return createPortalSession({
+          returnUrl,
+        });
+      },
+      billingFeatures: BILLING_FEATURES,
       refreshAccess: async () => {
         const currentUser = auth.currentUser;
-        if (!currentUser) return;
+        if (!currentUser) return null;
 
         const nextAccess = await buildAccessState(currentUser);
         setState({ loading: false, error: null, ...nextAccess });
+        return nextAccess;
       },
     }),
     [state]

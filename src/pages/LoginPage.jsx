@@ -1,21 +1,32 @@
 import React, { useState } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
+import { resolvePostAuthPath } from "../lib/authRouting";
+import { normalizeAuthErrorCode, trackSignInEvent } from "../lib/analyticsEvents";
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { signIn, user } = useAuth();
+  const { loading, signIn, user, roles, homePath, refreshAccess } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  const fromPath = location.state?.from?.pathname || "/";
+  const fromPath = location.state?.from?.pathname;
+
+  if (loading) {
+    return <p style={{ padding: 24 }}>Loading access...</p>;
+  }
 
   if (user) {
-    return <Navigate to={fromPath} replace />;
+    const redirectPath = resolvePostAuthPath({
+      requestedPath: fromPath,
+      userRoles: roles,
+      fallbackPath: homePath,
+    });
+    return <Navigate to={redirectPath} replace />;
   }
 
   async function handleSubmit(event) {
@@ -25,8 +36,30 @@ export default function LoginPage() {
 
     try {
       await signIn({ email, password });
-      navigate(fromPath, { replace: true });
+      let nextAccess = null;
+      try {
+        nextAccess = await refreshAccess();
+      } catch (refreshError) {
+        console.error("Access refresh after sign-in failed:", refreshError);
+      }
+      const redirectPath = resolvePostAuthPath({
+        requestedPath: fromPath,
+        userRoles: nextAccess?.roles ?? roles,
+        fallbackPath: nextAccess?.homePath ?? homePath,
+      });
+      void trackSignInEvent({
+        outcome: "success",
+        method: "password",
+        role: nextAccess?.primaryRole ?? roles?.[0] ?? null,
+        destinationPath: redirectPath,
+      });
+      navigate(redirectPath, { replace: true });
     } catch (authError) {
+      void trackSignInEvent({
+        outcome: "error",
+        method: "password",
+        errorCode: normalizeAuthErrorCode(authError),
+      });
       setError(authError.message || "Unable to sign in.");
     } finally {
       setSubmitting(false);

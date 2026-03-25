@@ -84,6 +84,12 @@ const styles = `
     padding: 26px 0 16px;
   }
 
+  .topbar-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
   .brand {
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -400,10 +406,15 @@ export default function LandingPage() {
 
       <div className="shell">
         <header className="topbar">
-          <div className="brand">NeuroVoice AAC</div>
-          <Link to="/app" className="ghost-link">
-            Open Workspace
-          </Link>
+          <div className="brand">Titonova NeuroVoice</div>
+          <div className="topbar-actions">
+            <Link to="/pricing" className="ghost-link">
+              Pricing
+            </Link>
+            <Link to="/app" className="ghost-link">
+              Open Workspace
+            </Link>
+          </div>
         </header>
 
         <section className="hero" id="main-content">
@@ -424,6 +435,9 @@ export default function LandingPage() {
             <div className="cta-row">
               <Link to="/app" className="cta">
                 Start Now
+              </Link>
+              <Link to="/pricing" className="cta alt">
+                View Plans
               </Link>
               <a href="#features" className="cta alt">
                 See Features
