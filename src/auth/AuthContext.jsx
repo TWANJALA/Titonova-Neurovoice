@@ -19,8 +19,10 @@ import {
 } from "../lib/billingClient";
 import {
   BILLING_FEATURES,
+  BILLING_INTERVALS,
   BILLING_TIERS,
   getPlanLimit,
+  normalizeBillingInterval,
   normalizePlanTier,
   planHasFeature,
 } from "../lib/billingPlans";
@@ -195,6 +197,7 @@ export function AuthProvider({ children }) {
       getPlanLimit: (limitKey) => getPlanLimit(state.planTier, limitKey),
       startCheckout: async ({
         tier = BILLING_TIERS.PRO,
+        interval = BILLING_INTERVALS.MONTH,
         successPath = "",
         cancelPath = "",
       } = {}) => {
@@ -203,6 +206,7 @@ export function AuthProvider({ children }) {
         }
 
         const normalizedTier = normalizePlanTier(tier, BILLING_TIERS.PRO);
+        const normalizedInterval = normalizeBillingInterval(interval, BILLING_INTERVALS.MONTH);
         const origin = typeof window === "undefined" ? "" : window.location.origin;
         const toAbsoluteUrl = (path, fallbackPath) => {
           const raw = String(path ?? "").trim();
@@ -213,13 +217,14 @@ export function AuthProvider({ children }) {
 
         return createCheckoutSession({
           tier: normalizedTier,
+          interval: normalizedInterval,
           successUrl: toAbsoluteUrl(
             successPath,
-            `/pricing?checkout=success&tier=${normalizedTier}&session_id={CHECKOUT_SESSION_ID}`
+            `/pricing?checkout=success&tier=${normalizedTier}&interval=${normalizedInterval}&session_id={CHECKOUT_SESSION_ID}`
           ),
           cancelUrl: toAbsoluteUrl(
             cancelPath,
-            `/pricing?checkout=cancel&tier=${normalizedTier}`
+            `/pricing?checkout=cancel&tier=${normalizedTier}&interval=${normalizedInterval}`
           ),
         });
       },

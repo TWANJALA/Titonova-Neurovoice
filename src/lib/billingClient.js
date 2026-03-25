@@ -72,3 +72,7 @@ export function createPortalSession(payload) {
 export function getSubscriptionStatus() {
   return getJson("/api/billing/subscription-status");
 }
+
+export function getBillingHealth() {
+  return getJson("/api/billing/health");
+}

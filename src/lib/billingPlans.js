@@ -4,6 +4,11 @@ export const BILLING_TIERS = {
   PREMIUM: "premium",
 };
 
+export const BILLING_INTERVALS = {
+  MONTH: "month",
+  YEAR: "year",
+};
+
 export const BILLING_FEATURES = {
   BACKUP_TOOLS: "backup_tools",
   AUTO_SPEAK: "auto_speak",
@@ -17,6 +22,11 @@ const PLAN_BY_TIER = {
     name: "Basic",
     subtitle: "Entry level",
     priceLabel: "$19/mo",
+    priceByInterval: {
+      [BILLING_INTERVALS.MONTH]: "$19/mo",
+      [BILLING_INTERVALS.YEAR]: "$190/yr",
+    },
+    yearlySavingsLabel: "Save ~17%",
     description: "Essential communication tools for individuals and families starting out.",
     recommended: false,
     limits: {
@@ -40,6 +50,11 @@ const PLAN_BY_TIER = {
     name: "Pro",
     subtitle: "Most Popular",
     priceLabel: "$39/mo",
+    priceByInterval: {
+      [BILLING_INTERVALS.MONTH]: "$39/mo",
+      [BILLING_INTERVALS.YEAR]: "$390/yr",
+    },
+    yearlySavingsLabel: "Save ~17%",
     description: "Full core platform for growing households and active therapy workflows.",
     recommended: true,
     limits: {
@@ -63,6 +78,11 @@ const PLAN_BY_TIER = {
     name: "Premium",
     subtitle: "VIP power users",
     priceLabel: "$99/mo",
+    priceByInterval: {
+      [BILLING_INTERVALS.MONTH]: "$99/mo",
+      [BILLING_INTERVALS.YEAR]: "$990/yr",
+    },
+    yearlySavingsLabel: "Save ~17%",
     description: "Unlimited flexibility and white-glove support for advanced teams.",
     recommended: false,
     limits: {
@@ -99,9 +119,27 @@ export function normalizePlanTier(value, fallback = BILLING_TIERS.BASIC) {
   return isKnownPlanTier(normalized) ? normalized : fallback;
 }
 
+export function normalizeBillingInterval(value, fallback = BILLING_INTERVALS.MONTH) {
+  const normalized = String(value ?? "").trim().toLowerCase();
+  if (normalized === BILLING_INTERVALS.MONTH || normalized === BILLING_INTERVALS.YEAR) {
+    return normalized;
+  }
+  return fallback;
+}
+
 export function getBillingPlan(tier) {
   const safeTier = normalizePlanTier(tier);
   return PLAN_BY_TIER[safeTier];
+}
+
+export function getPlanPriceLabel(tier, interval = BILLING_INTERVALS.MONTH) {
+  const safeInterval = normalizeBillingInterval(interval, BILLING_INTERVALS.MONTH);
+  const plan = getBillingPlan(tier);
+  return (
+    plan?.priceByInterval?.[safeInterval] ??
+    plan?.priceByInterval?.[BILLING_INTERVALS.MONTH] ??
+    "$0/mo"
+  );
 }
 
 export function getPlanLimit(tier, key) {

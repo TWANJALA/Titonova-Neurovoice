@@ -12,15 +12,34 @@ const DEFAULT_RATE_LIMIT_WINDOW_MS = 60_000;
 const STRIPE_WEBHOOK_TOLERANCE_SECONDS = 300;
 
 const KNOWN_TIERS = new Set(["basic", "pro", "premium"]);
+const KNOWN_INTERVALS = new Set(["month", "year"]);
 
 function toInt(value, fallback) {
   const parsed = Number.parseInt(String(value ?? ""), 10);
   return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
 }
 
+function toNonNegativeInt(value, fallback) {
+  const parsed = Number.parseInt(String(value ?? ""), 10);
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
+}
+
 function normalizeTier(value, fallback = "basic") {
   const normalized = String(value ?? "").trim().toLowerCase();
   return KNOWN_TIERS.has(normalized) ? normalized : fallback;
+}
+
+function normalizeInterval(value, fallback = "month") {
+  const normalized = String(value ?? "").trim().toLowerCase();
+  return KNOWN_INTERVALS.has(normalized) ? normalized : fallback;
+}
+
+function toBoolean(value, fallback = false) {
+  const normalized = String(value ?? "").trim().toLowerCase();
+  if (!normalized) return fallback;
+  if (["1", "true", "yes", "on"].includes(normalized)) return true;
+  if (["0", "false", "no", "off"].includes(normalized)) return false;
+  return fallback;
 }
 
 function json(res, statusCode, payload) {
@@ -407,21 +426,39 @@ export function stripeBillingApiPlugin(env = {}) {
   const stripeSecretKey = String(env.STRIPE_SECRET_KEY ?? "").trim();
   const stripeWebhookSecret = String(env.STRIPE_WEBHOOK_SECRET ?? "").trim();
   const firebaseWebApiKey = String(env.FIREBASE_WEB_API_KEY ?? env.VITE_FIREBASE_API_KEY ?? "").trim();
-  const stripePriceIds = {
-    basic: String(env.STRIPE_PRICE_BASIC_MONTHLY ?? "").trim(),
-    pro: String(env.STRIPE_PRICE_PRO_MONTHLY ?? "").trim(),
-    premium: String(env.STRIPE_PRICE_PREMIUM_MONTHLY ?? "").trim(),
+  const stripePriceCatalog = {
+    basic: {
+      month: String(env.STRIPE_PRICE_BASIC_MONTHLY ?? "").trim(),
+      year: String(env.STRIPE_PRICE_BASIC_ANNUAL ?? "").trim(),
+    },
+    pro: {
+      month: String(env.STRIPE_PRICE_PRO_MONTHLY ?? "").trim(),
+      year: String(env.STRIPE_PRICE_PRO_ANNUAL ?? "").trim(),
+    },
+    premium: {
+      month: String(env.STRIPE_PRICE_PREMIUM_MONTHLY ?? "").trim(),
+      year: String(env.STRIPE_PRICE_PREMIUM_ANNUAL ?? "").trim(),
+    },
   };
+
   const priceIdToTier = new Map(
-    Object.entries(stripePriceIds)
-      .filter(([, priceId]) => Boolean(priceId))
-      .map(([tier, priceId]) => [priceId, tier])
+    Object.entries(stripePriceCatalog)
+      .flatMap(([tier, intervalMap]) =>
+        Object.values(intervalMap)
+          .filter(Boolean)
+          .map((priceId) => [priceId, tier])
+      )
   );
 
   const timeoutMs = toInt(env.BILLING_TIMEOUT_MS, DEFAULT_TIMEOUT_MS);
   const authTimeoutMs = toInt(env.BILLING_AUTH_TIMEOUT_MS, DEFAULT_AUTH_TIMEOUT_MS);
   const maxRequests = toInt(env.BILLING_RATE_LIMIT_MAX, DEFAULT_RATE_LIMIT_MAX);
   const windowMs = toInt(env.BILLING_RATE_LIMIT_WINDOW_MS, DEFAULT_RATE_LIMIT_WINDOW_MS);
+  const enableAutomaticTax = toBoolean(env.BILLING_ENABLE_AUTOMATIC_TAX, true);
+  const requireBillingAddress = toBoolean(env.BILLING_REQUIRE_BILLING_ADDRESS, true);
+  const enablePhoneCollection = toBoolean(env.BILLING_ENABLE_PHONE_COLLECTION, true);
+  const enableTaxIdCollection = toBoolean(env.BILLING_ENABLE_TAX_ID_COLLECTION, true);
+  const trialDays = toNonNegativeInt(env.BILLING_TRIAL_DAYS, 0);
   const limiter = createRateLimiter({ maxRequests, windowMs });
 
   const middleware = async (req, res, next) => {
@@ -515,9 +552,16 @@ export function stripeBillingApiPlugin(env = {}) {
           String(env.FIREBASE_ADMIN_PRIVATE_KEY ?? "").trim()
       );
       const plansConfigured = Object.fromEntries(
-        Object.entries(stripePriceIds).map(([tier, priceId]) => [tier, Boolean(priceId)])
+        Object.entries(stripePriceCatalog).map(([tier, intervals]) => [
+          tier,
+          {
+            month: Boolean(intervals?.month),
+            year: Boolean(intervals?.year),
+          },
+        ])
       );
-      const checkoutReady = Boolean(stripeSecretKey) && Object.values(plansConfigured).every(Boolean);
+      const checkoutReady =
+        Boolean(stripeSecretKey) && Object.values(plansConfigured).every((intervals) => Boolean(intervals?.month));
       const billingStoreReady = supabaseReady || firestoreReady;
       const authReady = Boolean(firebaseWebApiKey);
       return json(res, 200, {
@@ -529,6 +573,13 @@ export function stripeBillingApiPlugin(env = {}) {
           supabaseReady,
           firestoreReady,
           fallback: "memory",
+        },
+        checkoutSettings: {
+          automaticTax: enableAutomaticTax,
+          billingAddressRequired: requireBillingAddress,
+          phoneCollection: enablePhoneCollection,
+          taxIdCollection: enableTaxIdCollection,
+          trialDays,
         },
         plansConfigured,
       });
@@ -606,11 +657,15 @@ export function stripeBillingApiPlugin(env = {}) {
         return json(res, 400, { error: "Invalid or missing plan tier" });
       }
 
-      const priceId = stripePriceIds[tier];
+      const interval = normalizeInterval(body?.interval, "month");
+      const priceId = String(stripePriceCatalog?.[tier]?.[interval] ?? "").trim();
       if (!priceId) {
         return json(res, 503, {
-          error: `Price ID for tier "${tier}" is not configured`,
-          hint: `Set STRIPE_PRICE_${tier.toUpperCase()}_MONTHLY in your environment`,
+          error: `Price ID for tier "${tier}" and interval "${interval}" is not configured`,
+          hint:
+            interval === "year"
+              ? `Set STRIPE_PRICE_${tier.toUpperCase()}_ANNUAL in your environment`
+              : `Set STRIPE_PRICE_${tier.toUpperCase()}_MONTHLY in your environment`,
         });
       }
 
@@ -624,11 +679,12 @@ export function stripeBillingApiPlugin(env = {}) {
         stripeCustomerId = "";
       }
       const successUrl = toAbsoluteUrl(
-        body?.successUrl || `/pricing?checkout=success&tier=${tier}&session_id={CHECKOUT_SESSION_ID}`,
+        body?.successUrl ||
+          `/pricing?checkout=success&tier=${tier}&interval=${interval}&session_id={CHECKOUT_SESSION_ID}`,
         baseUrl
       );
       const cancelUrl = toAbsoluteUrl(
-        body?.cancelUrl || `/pricing?checkout=cancel&tier=${tier}`,
+        body?.cancelUrl || `/pricing?checkout=cancel&tier=${tier}&interval=${interval}`,
         baseUrl
       );
 
@@ -639,6 +695,23 @@ export function stripeBillingApiPlugin(env = {}) {
       formData.append("success_url", successUrl);
       formData.append("cancel_url", cancelUrl);
       formData.append("allow_promotion_codes", "true");
+      if (enableAutomaticTax) {
+        formData.append("automatic_tax[enabled]", "true");
+      }
+      if (requireBillingAddress) {
+        formData.append("billing_address_collection", "required");
+      }
+      if (enableTaxIdCollection) {
+        formData.append("tax_id_collection[enabled]", "true");
+      }
+      if (enablePhoneCollection) {
+        formData.append("phone_number_collection[enabled]", "true");
+      }
+      formData.append("customer_update[address]", "auto");
+      formData.append("customer_update[name]", "auto");
+      if (trialDays > 0) {
+        formData.append("subscription_data[trial_period_days]", String(trialDays));
+      }
       if (uid) {
         formData.append("client_reference_id", uid);
         formData.append("metadata[user_uid]", uid);
@@ -647,7 +720,9 @@ export function stripeBillingApiPlugin(env = {}) {
         formData.append("metadata[user_email]", email);
       }
       formData.append("metadata[plan_tier]", tier);
+      formData.append("metadata[plan_interval]", interval);
       formData.append("subscription_data[metadata][plan_tier]", tier);
+      formData.append("subscription_data[metadata][plan_interval]", interval);
       if (uid) {
         formData.append("subscription_data[metadata][user_uid]", uid);
       }
@@ -674,6 +749,7 @@ export function stripeBillingApiPlugin(env = {}) {
           sessionId: session.id,
           checkoutUrl: session.url,
           tier,
+          interval,
         });
       } catch (error) {
         return json(res, 502, {
@@ -749,12 +825,15 @@ export function stripeBillingApiPlugin(env = {}) {
         const status = String(session?.status ?? "").toLowerCase();
         const completed = status === "complete";
         const metadataTier = normalizeTier(session?.metadata?.plan_tier, "");
+        const metadataInterval = normalizeInterval(session?.metadata?.plan_interval, "");
         const fallbackTier = normalizeTier(body?.tier, "basic");
+        const fallbackInterval = normalizeInterval(body?.interval, "month");
 
         return json(res, 200, {
           completed,
           status,
           tier: metadataTier || fallbackTier,
+          interval: metadataInterval || fallbackInterval,
           stripeCustomerId: String(session?.customer ?? "").trim(),
           stripeSubscriptionId: String(session?.subscription ?? "").trim(),
           customerEmail: String(session?.customer_details?.email ?? session?.metadata?.user_email ?? "").trim(),
