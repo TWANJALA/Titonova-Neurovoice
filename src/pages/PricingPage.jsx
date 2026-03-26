@@ -15,6 +15,11 @@ function formatTierName(tier) {
   return getBillingPlan(tier).name;
 }
 
+function isActiveSubscriptionStatus(status) {
+  const normalized = String(status ?? "").trim().toLowerCase();
+  return normalized === "active" || normalized === "trialing" || normalized === "past_due";
+}
+
 export default function PricingPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -22,6 +27,7 @@ export default function PricingPage() {
     loading,
     user,
     planTier,
+    subscriptionStatus,
     stripeCustomerId,
     startCheckout,
     openBillingPortal,
@@ -33,6 +39,7 @@ export default function PricingPage() {
   const [message, setMessage] = useState("");
   const [billingInterval, setBillingInterval] = useState(BILLING_INTERVALS.MONTH);
   const [billingHealth, setBillingHealth] = useState(null);
+  const [viewport, setViewport] = useState({ width: 0, height: 0 });
 
   const query = useMemo(() => new URLSearchParams(location.search), [location.search]);
   const checkoutStatus = String(query.get("checkout") ?? "").trim().toLowerCase();
@@ -59,6 +66,21 @@ export default function PricingPage() {
       });
     return () => {
       active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    const syncViewport = () => {
+      setViewport({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    syncViewport();
+    window.addEventListener("resize", syncViewport);
+    return () => {
+      window.removeEventListener("resize", syncViewport);
     };
   }, []);
 
@@ -173,18 +195,54 @@ export default function PricingPage() {
 
   const isBusy = (key) => busyKey === key;
   const isAnnual = billingInterval === BILLING_INTERVALS.YEAR;
+  const hasActiveSubscription = isActiveSubscriptionStatus(subscriptionStatus);
+  const isLaptopCompact =
+    viewport.height >= 700 &&
+    viewport.height <= 950 &&
+    viewport.width >= 1024;
+  const useThreeColumnCompactCards = isLaptopCompact && viewport.width >= 1180;
   const annualBadgeText = "Annual billing usually reduces total cost.";
 
+  const resolvedPageStyle = isLaptopCompact ? compactPageStyle : pageStyle;
+  const resolvedHeroStyle = isLaptopCompact ? compactHeroStyle : heroStyle;
+  const resolvedTitleStyle = isLaptopCompact ? compactTitleStyle : titleStyle;
+  const resolvedSubtitleStyle = isLaptopCompact ? compactSubtitleStyle : subtitleStyle;
+  const resolvedHeroActionsStyle = isLaptopCompact ? compactHeroActionsStyle : heroActionsStyle;
+  const resolvedIntervalToggleStyle = isLaptopCompact ? compactIntervalToggleStyle : intervalToggleStyle;
+  const resolvedToggleButtonStyle = isLaptopCompact ? compactToggleButtonStyle : toggleButtonStyle;
+  const resolvedToggleActiveStyle = isLaptopCompact ? compactToggleActiveStyle : toggleActiveStyle;
+  const resolvedAnnualBadgeStyle = isLaptopCompact ? compactAnnualBadgeStyle : annualBadgeStyle;
+  const resolvedMetaStyle = isLaptopCompact ? compactMetaStyle : metaStyle;
+  const resolvedWarningStyle = isLaptopCompact ? compactWarningStyle : warningStyle;
+  const resolvedErrorStyle = isLaptopCompact ? compactErrorStyle : errorStyle;
+  const resolvedSuccessStyle = isLaptopCompact ? compactSuccessStyle : successStyle;
+  const resolvedCommerceStripStyle = isLaptopCompact ? compactCommerceStripStyle : commerceStripStyle;
+  const resolvedCommerceStripTextStyle = isLaptopCompact
+    ? compactCommerceStripTextStyle
+    : commerceStripTextStyle;
+  const resolvedPlanGridStyle = useThreeColumnCompactCards
+    ? compactPlanGridThreeColumnStyle
+    : isLaptopCompact
+      ? compactPlanGridStyle
+      : planGridStyle;
+  const resolvedGhostButtonStyle = isLaptopCompact ? compactGhostButtonStyle : ghostButtonStyle;
+  const resolvedSolidButtonStyle = isLaptopCompact ? compactSolidButtonStyle : solidButtonStyle;
+  const resolvedCurrentPlanButtonStyle = isLaptopCompact
+    ? compactCurrentPlanButtonStyle
+    : currentPlanButtonStyle;
+  const resolvedCheckoutButtonStyle = isLaptopCompact ? compactCheckoutButtonStyle : checkoutButtonStyle;
+  const resolvedAnnualFallbackStyle = isLaptopCompact ? compactAnnualFallbackStyle : annualFallbackStyle;
+
   return (
-    <main style={pageStyle}>
-      <section style={heroStyle}>
+    <main style={resolvedPageStyle}>
+      <section style={resolvedHeroStyle}>
         <p style={eyebrowStyle}>Billing</p>
-        <h1 style={titleStyle}>Choose your Titonova NeuroVoice plan</h1>
-        <p style={subtitleStyle}>
+        <h1 style={resolvedTitleStyle}>Choose your Titonova NeuroVoice plan</h1>
+        <p style={resolvedSubtitleStyle}>
           Global checkout with tax/VAT capture, annual billing support, and plans optimized for households and therapy teams.
         </p>
-        <div style={heroActionsStyle}>
-          <Link to="/app" style={ghostButtonStyle}>
+        <div style={resolvedHeroActionsStyle}>
+          <Link to="/app" style={resolvedGhostButtonStyle}>
             Back to workspace
           </Link>
           {user && stripeCustomerId ? (
@@ -192,24 +250,24 @@ export default function PricingPage() {
               type="button"
               onClick={handleOpenPortal}
               disabled={isBusy("portal")}
-              style={solidButtonStyle}
+              style={resolvedSolidButtonStyle}
             >
               {isBusy("portal") ? "Opening portal..." : "Manage Billing"}
             </button>
           ) : null}
           <a
             href="mailto:sales@titonova.com?subject=Titonova%20NeuroVoice%20Global%20Plan%20Inquiry"
-            style={ghostButtonStyle}
+            style={resolvedGhostButtonStyle}
           >
             Contact Sales
           </a>
         </div>
-        <div style={intervalToggleStyle}>
+        <div style={resolvedIntervalToggleStyle}>
           <button
             type="button"
             onClick={() => setBillingInterval(BILLING_INTERVALS.MONTH)}
             disabled={busyKey !== ""}
-            style={billingInterval === BILLING_INTERVALS.MONTH ? toggleActiveStyle : toggleButtonStyle}
+            style={billingInterval === BILLING_INTERVALS.MONTH ? resolvedToggleActiveStyle : resolvedToggleButtonStyle}
           >
             Monthly
           </button>
@@ -217,30 +275,32 @@ export default function PricingPage() {
             type="button"
             onClick={() => setBillingInterval(BILLING_INTERVALS.YEAR)}
             disabled={busyKey !== ""}
-            style={billingInterval === BILLING_INTERVALS.YEAR ? toggleActiveStyle : toggleButtonStyle}
+            style={billingInterval === BILLING_INTERVALS.YEAR ? resolvedToggleActiveStyle : resolvedToggleButtonStyle}
           >
             Yearly
           </button>
-          {isAnnual ? <span style={annualBadgeStyle}>{annualBadgeText}</span> : null}
+          {isAnnual ? <span style={resolvedAnnualBadgeStyle}>{annualBadgeText}</span> : null}
         </div>
-        <p style={metaStyle}>
-          Current plan: <strong>{formatTierName(planTier)}</strong>
+        <p style={resolvedMetaStyle}>
+          Current plan:{" "}
+          <strong>{formatTierName(planTier)}</strong>
+          {!hasActiveSubscription ? " (not activated yet)" : ""}
         </p>
-        {loading ? <p style={metaStyle}>Loading account...</p> : null}
-        {checkoutStatus === "cancel" ? <p style={warningStyle}>Checkout canceled. No changes were made.</p> : null}
-        {error ? <p style={errorStyle}>{error}</p> : null}
-        {message ? <p style={successStyle}>{message}</p> : null}
+        {loading ? <p style={resolvedMetaStyle}>Loading account...</p> : null}
+        {checkoutStatus === "cancel" ? <p style={resolvedWarningStyle}>Checkout canceled. No changes were made.</p> : null}
+        {error ? <p style={resolvedErrorStyle}>{error}</p> : null}
+        {message ? <p style={resolvedSuccessStyle}>{message}</p> : null}
       </section>
 
-      <section style={commerceStripStyle}>
-        <p style={commerceStripTextStyle}>Global card-ready checkout</p>
-        <p style={commerceStripTextStyle}>Tax/VAT information captured during purchase</p>
-        <p style={commerceStripTextStyle}>Promotion codes and billing portal enabled</p>
+      <section style={resolvedCommerceStripStyle}>
+        <p style={resolvedCommerceStripTextStyle}>Global card-ready checkout</p>
+        <p style={resolvedCommerceStripTextStyle}>Tax/VAT information captured during purchase</p>
+        <p style={resolvedCommerceStripTextStyle}>Promotion codes and billing portal enabled</p>
       </section>
 
-      <section style={planGridStyle}>
+      <section style={resolvedPlanGridStyle}>
         {BILLING_PLAN_ORDER.map((plan) => {
-          const isCurrentPlan = plan.tier === planTier;
+          const isCurrentPlan = hasActiveSubscription && plan.tier === planTier;
           const planIntervalSupport =
             billingHealth?.plansConfigured?.[plan.tier] ?? {};
           const isIntervalReady =
@@ -251,16 +311,19 @@ export default function PricingPage() {
           const isPlanBusy = isBusy(checkoutKey);
 
           return (
-            <article key={plan.tier} style={planCardStyle(isCurrentPlan, plan.recommended)}>
+            <article
+              key={plan.tier}
+              style={isLaptopCompact ? compactPlanCardStyle(isCurrentPlan, plan.recommended) : planCardStyle(isCurrentPlan, plan.recommended)}
+            >
               <div style={planHeaderStyle}>
-                <h2 style={planTitleStyle}>{plan.name}</h2>
-                {plan.recommended ? <span style={popularBadgeStyle}>Most Popular</span> : null}
+                <h2 style={isLaptopCompact ? compactPlanTitleStyle : planTitleStyle}>{plan.name}</h2>
+                {plan.recommended ? <span style={isLaptopCompact ? compactPopularBadgeStyle : popularBadgeStyle}>Most Popular</span> : null}
               </div>
-              <p style={planSubtitleStyle}>{plan.subtitle}</p>
-              <p style={priceStyle}>{getPlanPriceLabel(plan.tier, billingInterval)}</p>
-              {isAnnual ? <p style={savingsStyle}>{plan.yearlySavingsLabel}</p> : null}
-              <p style={planDescriptionStyle}>{plan.description}</p>
-              <ul style={featureListStyle}>
+              <p style={isLaptopCompact ? compactPlanSubtitleStyle : planSubtitleStyle}>{plan.subtitle}</p>
+              <p style={isLaptopCompact ? compactPriceStyle : priceStyle}>{getPlanPriceLabel(plan.tier, billingInterval)}</p>
+              {isAnnual ? <p style={isLaptopCompact ? compactSavingsStyle : savingsStyle}>{plan.yearlySavingsLabel}</p> : null}
+              <p style={isLaptopCompact ? compactPlanDescriptionStyle : planDescriptionStyle}>{plan.description}</p>
+              <ul style={isLaptopCompact ? compactFeatureListStyle : featureListStyle}>
                 {plan.highlights.map((item) => (
                   <li key={`${plan.tier}-${item}`}>{item}</li>
                 ))}
@@ -269,7 +332,7 @@ export default function PricingPage() {
                 type="button"
                 onClick={() => handleCheckout(plan.tier, billingInterval)}
                 disabled={isCurrentPlan || busyKey !== "" || !isIntervalReady}
-                style={isCurrentPlan ? currentPlanButtonStyle : checkoutButtonStyle}
+                style={isCurrentPlan ? resolvedCurrentPlanButtonStyle : resolvedCheckoutButtonStyle}
               >
                 {isCurrentPlan
                   ? "Current Plan"
@@ -280,7 +343,7 @@ export default function PricingPage() {
                     : `Choose ${plan.name}`}
               </button>
               {!isIntervalReady && isAnnual ? (
-                <p style={annualFallbackStyle}>
+                <p style={resolvedAnnualFallbackStyle}>
                   Annual billing for this tier is not configured yet. Use monthly now or contact sales.
                 </p>
               ) : null}
@@ -294,7 +357,7 @@ export default function PricingPage() {
 
 const pageStyle = {
   minHeight: "100vh",
-  padding: "28px min(4vw, 36px) 42px",
+  padding: "18px min(3vw, 28px) 26px",
   background:
     "radial-gradient(900px 400px at 5% -5%, #c8ecff 0%, transparent 60%), radial-gradient(700px 380px at 100% 0%, #d8ffe5 0%, transparent 65%), linear-gradient(170deg, #f4f9ff, #eef6ff)",
   color: "#10263a",
@@ -302,8 +365,8 @@ const pageStyle = {
 
 const heroStyle = {
   maxWidth: 960,
-  margin: "0 auto 18px",
-  padding: 24,
+  margin: "0 auto 12px",
+  padding: 18,
   borderRadius: 18,
   border: "1px solid #bfd9ef",
   background: "linear-gradient(180deg, #ffffff, #f5fbff)",
@@ -320,31 +383,33 @@ const eyebrowStyle = {
 };
 
 const titleStyle = {
-  marginTop: 10,
-  marginBottom: 10,
+  marginTop: 8,
+  marginBottom: 8,
   lineHeight: 1.08,
-  fontSize: "clamp(1.8rem, 4vw, 2.7rem)",
+  fontSize: "clamp(1.55rem, 3.2vw, 2.3rem)",
 };
 
 const subtitleStyle = {
   margin: 0,
   color: "#48637c",
+  fontSize: 14,
+  lineHeight: 1.45,
   maxWidth: 76 * 8,
 };
 
 const heroActionsStyle = {
   display: "flex",
-  gap: 10,
+  gap: 8,
   flexWrap: "wrap",
-  marginTop: 16,
+  marginTop: 12,
 };
 
 const intervalToggleStyle = {
-  marginTop: 14,
+  marginTop: 10,
   display: "flex",
   alignItems: "center",
   flexWrap: "wrap",
-  gap: 8,
+  gap: 6,
 };
 
 const toggleButtonStyle = {
@@ -352,8 +417,9 @@ const toggleButtonStyle = {
   borderRadius: 999,
   background: "#f8fbff",
   color: "#2e4b67",
-  padding: "7px 12px",
+  padding: "6px 10px",
   fontWeight: 700,
+  fontSize: 13,
   cursor: "pointer",
 };
 
@@ -369,8 +435,8 @@ const annualBadgeStyle = {
   border: "1px solid #2f9f6f",
   background: "#ebf9f1",
   color: "#146640",
-  padding: "5px 9px",
-  fontSize: 12,
+  padding: "4px 8px",
+  fontSize: 11,
   fontWeight: 700,
 };
 
@@ -379,8 +445,9 @@ const solidButtonStyle = {
   borderRadius: 10,
   background: "#27a86f",
   color: "#fff",
-  padding: "10px 14px",
+  padding: "8px 12px",
   fontWeight: 700,
+  fontSize: 13,
   cursor: "pointer",
 };
 
@@ -391,33 +458,35 @@ const ghostButtonStyle = {
   borderRadius: 10,
   background: "#fff",
   color: "#153754",
-  padding: "10px 14px",
+  padding: "8px 12px",
   textDecoration: "none",
   fontWeight: 700,
+  fontSize: 13,
 };
 
 const metaStyle = {
-  marginTop: 12,
+  marginTop: 8,
   marginBottom: 0,
   color: "#33516c",
+  fontSize: 14,
 };
 
 const warningStyle = {
-  marginTop: 12,
+  marginTop: 8,
   marginBottom: 0,
   color: "#8b5500",
   fontWeight: 600,
 };
 
 const errorStyle = {
-  marginTop: 12,
+  marginTop: 8,
   marginBottom: 0,
   color: "#9d1e1e",
   fontWeight: 600,
 };
 
 const successStyle = {
-  marginTop: 12,
+  marginTop: 8,
   marginBottom: 0,
   color: "#0f7a42",
   fontWeight: 700,
@@ -425,37 +494,37 @@ const successStyle = {
 
 const planGridStyle = {
   maxWidth: 960,
-  margin: "12px auto 0",
+  margin: "8px auto 0",
   display: "grid",
-  gap: 14,
-  gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+  gap: 10,
+  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
 };
 
 const commerceStripStyle = {
   maxWidth: 960,
   margin: "0 auto",
-  padding: "10px 14px",
+  padding: "8px 10px",
   borderRadius: 12,
   border: "1px solid #c8dcf0",
   background: "linear-gradient(180deg, #f8fbff, #f1f8ff)",
   display: "grid",
-  gap: 6,
-  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+  gap: 4,
+  gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
 };
 
 const commerceStripTextStyle = {
   margin: 0,
   color: "#33516c",
   fontWeight: 600,
-  fontSize: 13,
+  fontSize: 12,
 };
 
 const planCardStyle = (isCurrentPlan, isRecommended) => ({
   border: `1px solid ${isCurrentPlan ? "#2f9f6f" : isRecommended ? "#2f78c8" : "#bfd4e8"}`,
   borderRadius: 16,
-  padding: 16,
+  padding: 12,
   background: "linear-gradient(180deg, #ffffff, #f6fbff)",
-  boxShadow: isRecommended ? "0 16px 28px rgba(47, 120, 200, 0.16)" : "0 10px 20px rgba(16, 38, 58, 0.06)",
+  boxShadow: isRecommended ? "0 12px 22px rgba(47, 120, 200, 0.14)" : "0 8px 16px rgba(16, 38, 58, 0.06)",
 });
 
 const planHeaderStyle = {
@@ -467,56 +536,58 @@ const planHeaderStyle = {
 
 const planTitleStyle = {
   margin: 0,
-  fontSize: "1.25rem",
+  fontSize: "1.1rem",
 };
 
 const popularBadgeStyle = {
   borderRadius: 999,
   border: "1px solid #2f78c8",
-  padding: "3px 8px",
-  fontSize: 12,
+  padding: "2px 7px",
+  fontSize: 11,
   color: "#225f9e",
   fontWeight: 700,
   background: "#eaf4ff",
 };
 
 const planSubtitleStyle = {
-  marginTop: 6,
-  marginBottom: 8,
+  marginTop: 4,
+  marginBottom: 6,
   fontWeight: 600,
   color: "#49637d",
+  fontSize: 14,
 };
 
 const priceStyle = {
   marginTop: 0,
-  marginBottom: 10,
-  fontSize: "1.55rem",
+  marginBottom: 6,
+  fontSize: "1.4rem",
   fontWeight: 800,
   color: "#143351",
 };
 
 const savingsStyle = {
-  marginTop: -6,
-  marginBottom: 10,
+  marginTop: -2,
+  marginBottom: 8,
   color: "#1c7a4f",
   fontWeight: 700,
-  fontSize: 13,
+  fontSize: 12,
 };
 
 const planDescriptionStyle = {
   marginTop: 0,
-  marginBottom: 10,
+  marginBottom: 8,
   color: "#4a647d",
-  minHeight: 44,
+  fontSize: 14,
+  lineHeight: 1.35,
 };
 
 const featureListStyle = {
   marginTop: 0,
-  marginBottom: 14,
+  marginBottom: 10,
   paddingLeft: 18,
   color: "#1d3f60",
-  lineHeight: 1.45,
-  minHeight: 128,
+  lineHeight: 1.3,
+  fontSize: 14,
 };
 
 const checkoutButtonStyle = {
@@ -525,8 +596,9 @@ const checkoutButtonStyle = {
   borderRadius: 10,
   background: "#27a86f",
   color: "#fff",
-  padding: "10px 12px",
+  padding: "8px 10px",
   fontWeight: 700,
+  fontSize: 13,
   cursor: "pointer",
 };
 
@@ -536,8 +608,9 @@ const currentPlanButtonStyle = {
   borderRadius: 10,
   background: "#eff5fb",
   color: "#4b6881",
-  padding: "10px 12px",
+  padding: "8px 10px",
   fontWeight: 700,
+  fontSize: 13,
   cursor: "not-allowed",
 };
 
@@ -547,4 +620,190 @@ const annualFallbackStyle = {
   color: "#6e4e00",
   fontSize: 12,
   fontWeight: 600,
+};
+
+const compactPageStyle = {
+  ...pageStyle,
+  padding: "10px min(2.1vw, 16px) 14px",
+};
+
+const compactHeroStyle = {
+  ...heroStyle,
+  margin: "0 auto 8px",
+  padding: 12,
+};
+
+const compactTitleStyle = {
+  ...titleStyle,
+  marginTop: 6,
+  marginBottom: 6,
+  fontSize: "clamp(1.2rem, 2.1vw, 1.7rem)",
+};
+
+const compactSubtitleStyle = {
+  ...subtitleStyle,
+  fontSize: 12,
+  lineHeight: 1.3,
+};
+
+const compactHeroActionsStyle = {
+  ...heroActionsStyle,
+  marginTop: 8,
+  gap: 6,
+};
+
+const compactIntervalToggleStyle = {
+  ...intervalToggleStyle,
+  marginTop: 8,
+  gap: 5,
+};
+
+const compactToggleButtonStyle = {
+  ...toggleButtonStyle,
+  padding: "5px 9px",
+  fontSize: 12,
+};
+
+const compactToggleActiveStyle = {
+  ...toggleActiveStyle,
+  padding: "5px 9px",
+  fontSize: 12,
+};
+
+const compactAnnualBadgeStyle = {
+  ...annualBadgeStyle,
+  padding: "3px 7px",
+  fontSize: 10,
+};
+
+const compactGhostButtonStyle = {
+  ...ghostButtonStyle,
+  padding: "6px 10px",
+  fontSize: 12,
+};
+
+const compactSolidButtonStyle = {
+  ...solidButtonStyle,
+  padding: "6px 10px",
+  fontSize: 12,
+};
+
+const compactMetaStyle = {
+  ...metaStyle,
+  marginTop: 6,
+  fontSize: 12,
+};
+
+const compactWarningStyle = {
+  ...warningStyle,
+  marginTop: 6,
+  fontSize: 12,
+};
+
+const compactErrorStyle = {
+  ...errorStyle,
+  marginTop: 6,
+  fontSize: 12,
+};
+
+const compactSuccessStyle = {
+  ...successStyle,
+  marginTop: 6,
+  fontSize: 12,
+};
+
+const compactCommerceStripStyle = {
+  ...commerceStripStyle,
+  padding: "6px 8px",
+  gap: 4,
+  gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+};
+
+const compactCommerceStripTextStyle = {
+  ...commerceStripTextStyle,
+  fontSize: 11,
+};
+
+const compactPlanGridStyle = {
+  ...planGridStyle,
+  margin: "6px auto 0",
+  gap: 8,
+  gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+};
+
+const compactPlanGridThreeColumnStyle = {
+  ...compactPlanGridStyle,
+  gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+};
+
+const compactPlanCardStyle = (isCurrentPlan, isRecommended) => ({
+  ...planCardStyle(isCurrentPlan, isRecommended),
+  padding: 9,
+  borderRadius: 12,
+  boxShadow: isRecommended
+    ? "0 8px 14px rgba(47, 120, 200, 0.13)"
+    : "0 5px 10px rgba(16, 38, 58, 0.05)",
+});
+
+const compactPlanTitleStyle = {
+  ...planTitleStyle,
+  fontSize: "0.98rem",
+};
+
+const compactPopularBadgeStyle = {
+  ...popularBadgeStyle,
+  fontSize: 10,
+  padding: "2px 6px",
+};
+
+const compactPlanSubtitleStyle = {
+  ...planSubtitleStyle,
+  marginTop: 3,
+  marginBottom: 4,
+  fontSize: 12,
+};
+
+const compactPriceStyle = {
+  ...priceStyle,
+  marginBottom: 4,
+  fontSize: "1.22rem",
+};
+
+const compactSavingsStyle = {
+  ...savingsStyle,
+  marginBottom: 4,
+  fontSize: 11,
+};
+
+const compactPlanDescriptionStyle = {
+  ...planDescriptionStyle,
+  marginBottom: 5,
+  fontSize: 12,
+  lineHeight: 1.22,
+};
+
+const compactFeatureListStyle = {
+  ...featureListStyle,
+  marginBottom: 7,
+  fontSize: 12,
+  lineHeight: 1.2,
+  paddingLeft: 16,
+};
+
+const compactCheckoutButtonStyle = {
+  ...checkoutButtonStyle,
+  padding: "6px 8px",
+  fontSize: 12,
+};
+
+const compactCurrentPlanButtonStyle = {
+  ...currentPlanButtonStyle,
+  padding: "6px 8px",
+  fontSize: 12,
+};
+
+const compactAnnualFallbackStyle = {
+  ...annualFallbackStyle,
+  marginTop: 6,
+  fontSize: 11,
 };
