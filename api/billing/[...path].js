@@ -9,6 +9,15 @@ export const config = {
 const billingMiddleware = createStripeBillingMiddleware(process.env);
 
 function normalizeBillingUrl(req) {
+  const originalUrl = String(req.url ?? "");
+  const originalPathname = originalUrl.split("?")[0] ?? "";
+  if (
+    originalPathname.startsWith("/api/billing/") &&
+    !originalPathname.includes("[...path]")
+  ) {
+    return originalUrl;
+  }
+
   const rawPath = req.query?.path;
   const segments = Array.isArray(rawPath)
     ? rawPath
@@ -16,9 +25,23 @@ function normalizeBillingUrl(req) {
       ? [String(rawPath)]
       : [];
   const suffix = segments.length > 0 ? `/${segments.map((part) => encodeURIComponent(part)).join("/")}` : "";
-  const queryIndex = String(req.url ?? "").indexOf("?");
-  const query = queryIndex >= 0 ? String(req.url).slice(queryIndex) : "";
-  return `/api/billing${suffix}${query}`;
+
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(req.query ?? {})) {
+    if (key === "path") continue;
+    if (Array.isArray(value)) {
+      for (const item of value) {
+        params.append(key, String(item));
+      }
+      continue;
+    }
+    if (value !== undefined && value !== null) {
+      params.append(key, String(value));
+    }
+  }
+
+  const query = params.toString();
+  return `/api/billing${suffix}${query ? `?${query}` : ""}`;
 }
 
 export default async function handler(req, res) {
