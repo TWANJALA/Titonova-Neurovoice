@@ -6543,8 +6543,8 @@ export default function ParentPage() {
       <div style={workspaceShellStyle}>
       <header style={headerStyle}>
         <div>
-          <h1 style={{ marginBottom: 6, marginTop: 0, fontSize: "clamp(1.05rem, 2.4vw, 1.5rem)" }}>Titonova NeuroVoice</h1>
-          <p style={{ margin: 0, lineHeight: 1.45 }}>
+          <h1 style={{ marginBottom: 3, marginTop: 0, fontSize: "clamp(0.82rem, 1.6vw, 1rem)" }}>Titonova NeuroVoice</h1>
+          <p style={{ margin: 0, lineHeight: 1.2, fontSize: 11 }}>
             {user ? `Signed in as ${user?.displayName || user?.email}` : "Guest mode (no account required)"} | Active
             child: {activeChildProfile.name} | Roles: {roles.join(", ") || ROLES.PARENT} | Plan:{" "}
             {activePlan.name} ({activePlan.priceLabel})
@@ -6552,27 +6552,27 @@ export default function ParentPage() {
           <p style={syncStatusStyle}>{syncSummary}</p>
         </div>
 
-        <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", flex: "1 1 320px", justifyContent: "flex-end" }}>
+        <div style={{ display: "flex", gap: 4, alignItems: "center", flexWrap: "wrap", flex: "1 1 220px", justifyContent: "flex-end" }}>
           {hasAnyRole([ROLES.THERAPIST, ROLES.ADMIN, ROLES.SUPER_ADMIN]) ? (
-            <Link to="/therapist" style={linkPillStyle}>
+            <Link to="/therapist" style={topCardLinkPillStyle}>
               Therapist View
             </Link>
           ) : null}
           {hasAnyRole([ROLES.ADMIN, ROLES.SUPER_ADMIN]) ? (
-            <Link to="/admin" style={linkPillStyle}>
+            <Link to="/admin" style={topCardLinkPillStyle}>
               Admin View
             </Link>
           ) : null}
-          <Link to="/pricing" style={linkPillStyle}>
+          <Link to="/pricing" style={topCardLinkPillStyle}>
             Pricing
           </Link>
           {user && stripeCustomerId ? (
-            <button onClick={handleManageBilling} style={btnStyle}>
+            <button onClick={handleManageBilling} style={topCardActionBtnStyle}>
               Manage Billing
             </button>
           ) : null}
           {user ? (
-            <button onClick={signOut} style={btnStyle}>
+            <button onClick={signOut} style={topCardActionBtnStyle}>
               Sign out
             </button>
           ) : null}
@@ -6580,12 +6580,12 @@ export default function ParentPage() {
       </header>
 
       <section style={childSwitcherStyle}>
-        <strong>Child profile</strong>
+        <strong style={topCardTitleStyle}>Child profile</strong>
         <div style={childControlsStyle}>
           <select
             value={activeChildProfile.id}
             onChange={(event) => setActiveChildId(event.target.value)}
-            style={selectStyle}
+            style={topCardSelectStyle}
           >
             {childProfiles.map((profile) => (
               <option key={profile.id} value={profile.id}>
@@ -6593,17 +6593,17 @@ export default function ParentPage() {
               </option>
             ))}
           </select>
-          <button onClick={addChildProfile} style={btnStyle}>
+          <button onClick={addChildProfile} style={topCardActionBtnStyle}>
             Add Child
           </button>
-          <button onClick={renameActiveChild} style={btnStyle}>
+          <button onClick={renameActiveChild} style={topCardActionBtnStyle}>
             Rename
           </button>
-          <button onClick={removeActiveChild} style={btnStyle}>
+          <button onClick={removeActiveChild} style={topCardActionBtnStyle}>
             Delete
           </button>
         </div>
-        <p style={{ margin: "8px 0 0", color: "#9db5ce", fontSize: 13 }}>
+        <p style={{ margin: "4px 0 0", color: "#9db5ce", fontSize: 10 }}>
           {activePlan.name} limit: up to {maxChildrenAllowed} child profile{maxChildrenAllowed === 1 ? "" : "s"}.
         </p>
       </section>
@@ -8299,22 +8299,22 @@ const headerStyle = {
   justifyContent: "space-between",
   alignItems: "flex-start",
   flexWrap: "wrap",
-  gap: 10,
-  marginBottom: 10,
-  padding: "clamp(9px, 1.5vw, 12px)",
-  borderRadius: 16,
+  gap: 5,
+  marginBottom: 5,
+  padding: "clamp(4px, 0.8vw, 6px)",
+  borderRadius: 10,
   background: "linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04))",
   border: "1px solid rgba(154, 190, 228, 0.26)",
   backdropFilter: "blur(6px)",
 };
 
 const syncStatusStyle = {
-  marginTop: 8,
+  marginTop: 4,
   marginBottom: 0,
   display: "inline-block",
-  padding: "4px 10px",
+  padding: "2px 6px",
   borderRadius: 999,
-  fontSize: 12,
+  fontSize: 10,
   letterSpacing: 0.2,
   color: "#c8e4ff",
   border: "1px solid rgba(138, 177, 216, 0.45)",
@@ -8364,16 +8364,53 @@ const warningDismissBtnStyle = {
 const childSwitcherStyle = {
   border: "1px solid rgba(132, 169, 208, 0.3)",
   background: "rgba(12, 28, 47, 0.66)",
-  borderRadius: 12,
-  padding: 7,
-  marginBottom: 7,
+  borderRadius: 8,
+  padding: 4,
+  marginBottom: 4,
 };
 
 const childControlsStyle = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(118px, 1fr))",
-  gap: 5,
-  marginTop: 5,
+  gridTemplateColumns: "repeat(auto-fit, minmax(96px, 1fr))",
+  gap: 3,
+  marginTop: 3,
+};
+
+const topCardTitleStyle = {
+  display: "block",
+  fontSize: 12,
+  lineHeight: 1.1,
+};
+
+const topCardLinkPillStyle = {
+  ...linkPillStyle,
+  padding: "4px 7px",
+  borderRadius: 7,
+  fontSize: 11,
+  lineHeight: 1.1,
+};
+
+const topCardActionBtnStyle = {
+  border: "1px solid rgba(143, 182, 222, 0.55)",
+  background: "linear-gradient(145deg, rgba(23,58,91,0.86), rgba(17,44,73,0.86))",
+  color: "#e9f6ff",
+  cursor: "pointer",
+  padding: "4px 7px",
+  borderRadius: 7,
+  fontSize: 11,
+  lineHeight: 1.1,
+  minHeight: 26,
+};
+
+const topCardSelectStyle = {
+  width: "100%",
+  border: "1px solid rgba(135, 172, 212, 0.5)",
+  background: "rgba(7, 21, 37, 0.9)",
+  color: "#e8f4ff",
+  padding: 5,
+  borderRadius: 7,
+  minHeight: 26,
+  fontSize: 11,
 };
 
 const panelCardStyle = {
