@@ -422,7 +422,7 @@ async function processStripeWebhookEvent({ event, env, priceIdToTier }) {
   return { handled: true, detail: `Event type "${eventType}" ignored.` };
 }
 
-export function stripeBillingApiPlugin(env = {}) {
+export function createStripeBillingMiddleware(env = {}) {
   const stripeSecretKey = String(env.STRIPE_SECRET_KEY ?? "").trim();
   const stripeWebhookSecret = String(env.STRIPE_WEBHOOK_SECRET ?? "").trim();
   const firebaseWebApiKey = String(env.FIREBASE_WEB_API_KEY ?? env.VITE_FIREBASE_API_KEY ?? "").trim();
@@ -463,7 +463,10 @@ export function stripeBillingApiPlugin(env = {}) {
 
   const middleware = async (req, res, next) => {
     if (!req.url?.startsWith("/api/billing")) {
-      return next();
+      if (typeof next === "function") {
+        return next();
+      }
+      return json(res, 404, { error: "Billing endpoint not found" });
     }
 
     const requestUrl = new URL(req.url, "http://localhost");
@@ -849,6 +852,11 @@ export function stripeBillingApiPlugin(env = {}) {
     return json(res, 404, { error: "Billing endpoint not found" });
   };
 
+  return middleware;
+}
+
+export function stripeBillingApiPlugin(env = {}) {
+  const middleware = createStripeBillingMiddleware(env);
   return {
     name: "stripe-billing-api",
     configureServer(server) {
