@@ -1521,21 +1521,23 @@ const pageStyle = {
   maxWidth: 980,
   margin: "40px auto",
   padding: 24,
+  color: "#e7f4ff",
 };
 
 const titleStyle = {
   marginBottom: 8,
+  color: "#f0f9ff",
 };
 
 const subtitleStyle = {
   marginTop: 0,
   marginBottom: 8,
-  color: "#364660",
+  color: "#a8c8e8",
 };
 
 const rolesStyle = {
   marginTop: 0,
-  color: "#4c5d7f",
+  color: "#95b7da",
 };
 
 const navRowStyle = {
@@ -1547,24 +1549,26 @@ const navRowStyle = {
 
 const linkStyle = {
   padding: "8px 12px",
-  border: "1px solid #bfcae2",
+  border: "1px solid rgba(140, 182, 227, 0.55)",
   borderRadius: 8,
   textDecoration: "none",
-  background: "#f8fbff",
-  color: "#203355",
+  background: "rgba(14, 34, 59, 0.76)",
+  color: "#dceeff",
 };
 
 const panelStyle = {
-  border: "1px solid #d6deea",
+  border: "1px solid rgba(133, 174, 218, 0.34)",
   borderRadius: 12,
   padding: 14,
   marginBottom: 12,
-  background: "#fff",
+  background: "linear-gradient(165deg, rgba(8, 22, 43, 0.86), rgba(7, 19, 37, 0.9))",
+  boxShadow: "0 18px 34px rgba(2, 9, 20, 0.4)",
 };
 
 const panelHeadingStyle = {
   marginTop: 0,
   marginBottom: 10,
+  color: "#ebf7ff",
 };
 
 const inputGridStyle = {
@@ -1585,27 +1589,31 @@ const labelStyle = {
   display: "grid",
   gap: 6,
   fontWeight: 600,
+  color: "#c9def3",
 };
 
 const inputStyle = {
   padding: "8px 10px",
   borderRadius: 8,
-  border: "1px solid #c7d0df",
+  border: "1px solid rgba(135, 173, 215, 0.52)",
+  background: "rgba(5, 18, 34, 0.86)",
+  color: "#e9f5ff",
 };
 
 const buttonStyle = {
   padding: "8px 12px",
   borderRadius: 8,
-  border: "1px solid #b9c6dc",
-  background: "#f3f7ff",
+  border: "1px solid rgba(136, 176, 219, 0.52)",
+  background: "rgba(12, 29, 52, 0.8)",
+  color: "#ddecff",
   cursor: "pointer",
 };
 
 const activeButtonStyle = {
   ...buttonStyle,
-  border: "1px solid #508de4",
-  background: "#dce9ff",
-  color: "#173866",
+  border: "1px solid rgba(115, 194, 251, 0.76)",
+  background: "linear-gradient(145deg, rgba(25, 93, 148, 0.86), rgba(20, 72, 123, 0.88))",
+  color: "#ecf7ff",
 };
 
 const metricGridStyle = {
@@ -1615,28 +1623,29 @@ const metricGridStyle = {
 };
 
 const metricCardStyle = {
-  border: "1px solid #d4dceb",
+  border: "1px solid rgba(130, 170, 213, 0.34)",
   borderRadius: 10,
   padding: 10,
-  background: "#f7f9ff",
+  background: "rgba(10, 28, 50, 0.72)",
 };
 
 const metricLabelStyle = {
   display: "block",
   fontSize: 12,
-  color: "#4e5f79",
+  color: "#9ec0e1",
   textTransform: "uppercase",
 };
 
 const metricValueStyle = {
   fontSize: 24,
   lineHeight: 1.1,
+  color: "#eaf7ff",
 };
 
 const metadataStyle = {
   marginBottom: 0,
   marginTop: 10,
-  color: "#51627f",
+  color: "#89aacd",
 };
 
 const goalRowStyle = {
@@ -1653,17 +1662,17 @@ const packGridStyle = {
 };
 
 const packCardStyle = {
-  border: "1px solid #d3dcf0",
+  border: "1px solid rgba(130, 170, 213, 0.34)",
   borderRadius: 10,
   padding: 10,
-  background: "#f8faff",
+  background: "rgba(10, 28, 50, 0.72)",
   display: "grid",
   gap: 8,
 };
 
 const packDescriptionStyle = {
   margin: 0,
-  color: "#4d5f7b",
+  color: "#9cbce0",
   fontSize: 14,
 };
 
@@ -1674,6 +1683,7 @@ const chartBlockStyle = {
 const chartTitleStyle = {
   display: "block",
   marginBottom: 8,
+  color: "#e8f5ff",
 };
 
 const chartGridStyle = (dayCount = 14) => ({
@@ -1684,8 +1694,8 @@ const chartGridStyle = (dayCount = 14) => ({
   minHeight: 130,
   padding: "8px 6px",
   borderRadius: 10,
-  background: "#f7f9ff",
-  border: "1px solid #d5ddee",
+  background: "rgba(10, 28, 50, 0.74)",
+  border: "1px solid rgba(133, 173, 216, 0.34)",
 });
 
 const barCellStyle = {
@@ -1720,7 +1730,7 @@ const dualRateBarStyle = {
 
 const barLabelStyle = {
   fontSize: 10,
-  color: "#5b6a85",
+  color: "#8daece",
 };
 
 const comparisonSectionStyle = {
@@ -1732,7 +1742,7 @@ const comparisonHeadingStyle = {
   marginTop: 0,
   marginBottom: 8,
   fontSize: 15,
-  color: "#2a3f60",
+  color: "#d9ecff",
 };
 
 const comparisonGridStyle = {
@@ -1742,9 +1752,9 @@ const comparisonGridStyle = {
 };
 
 const comparisonCardStyle = {
-  border: "1px solid #d4deef",
+  border: "1px solid rgba(132, 171, 215, 0.34)",
   borderRadius: 10,
-  background: "#f7f9ff",
+  background: "rgba(10, 28, 50, 0.74)",
   padding: 10,
   display: "grid",
   gap: 6,
@@ -1752,7 +1762,7 @@ const comparisonCardStyle = {
 
 const comparisonLabelStyle = {
   fontSize: 13,
-  color: "#2a3f60",
+  color: "#d9ecff",
 };
 
 const comparisonRowStyle = {
@@ -1760,7 +1770,7 @@ const comparisonRowStyle = {
   justifyContent: "space-between",
   gap: 8,
   fontSize: 12,
-  color: "#4e5f79",
+  color: "#98b8d9",
 };
 
 const comparisonDeltaStyle = (isPositive = true) => ({
@@ -1785,7 +1795,7 @@ const inlineLabelStyle = {
   display: "grid",
   gap: 4,
   fontSize: 12,
-  color: "#4e5f79",
+  color: "#9ec0e1",
   textTransform: "uppercase",
 };
 
@@ -1805,11 +1815,11 @@ const exportRowStyle = {
 const reportPreStyle = {
   margin: 0,
   whiteSpace: "pre-wrap",
-  background: "#f7f9ff",
-  border: "1px solid #d4deef",
+  background: "rgba(10, 28, 50, 0.74)",
+  border: "1px solid rgba(132, 171, 215, 0.34)",
   borderRadius: 10,
   padding: 10,
-  color: "#1f3557",
+  color: "#d8ebff",
   fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
   fontSize: 13,
 };
@@ -1817,7 +1827,7 @@ const reportPreStyle = {
 const tableWrapperStyle = {
   marginTop: 12,
   overflowX: "auto",
-  border: "1px solid #d4deef",
+  border: "1px solid rgba(132, 171, 214, 0.34)",
   borderRadius: 10,
 };
 
@@ -1832,26 +1842,26 @@ const thStyle = {
   fontSize: 12,
   textTransform: "uppercase",
   letterSpacing: 0.3,
-  color: "#4d5f7b",
+  color: "#9cbce0",
   padding: 8,
-  borderBottom: "1px solid #d4deef",
-  background: "#f7f9ff",
+  borderBottom: "1px solid rgba(132, 171, 214, 0.32)",
+  background: "rgba(10, 26, 47, 0.8)",
 };
 
 const tdStyle = {
   padding: 8,
-  borderBottom: "1px solid #edf1f8",
+  borderBottom: "1px solid rgba(121, 159, 201, 0.2)",
   fontSize: 13,
-  color: "#1f3557",
+  color: "#d8ebff",
   verticalAlign: "top",
 };
 
 const errorStyle = {
   marginBottom: 0,
-  color: "#9c1c1c",
+  color: "#ffc7cf",
 };
 
 const successStyle = {
   marginBottom: 0,
-  color: "#146131",
+  color: "#9ff4c8",
 };

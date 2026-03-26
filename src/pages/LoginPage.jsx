@@ -67,79 +67,45 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={containerStyle}>
-      <h1>Sign In</h1>
-      <form onSubmit={handleSubmit} style={formStyle}>
-        <label style={labelStyle}>
+    <main className="tn-auth-page">
+      <section className="tn-card">
+        <p className="tn-eyebrow">Titonova NeuroVoice</p>
+        <h1 className="tn-title">Sign In</h1>
+        <p className="tn-subtitle">Continue to your workspace, billing, and therapy dashboards.</p>
+        <form onSubmit={handleSubmit} className="tn-form">
+          <label className="tn-label">
           Email
           <input
             required
             type="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            style={inputStyle}
+            className="tn-input"
           />
-        </label>
+          </label>
 
-        <label style={labelStyle}>
+          <label className="tn-label">
           Password
           <input
             required
             type="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
-            style={inputStyle}
+            className="tn-input"
           />
-        </label>
+          </label>
 
-        {error ? <p style={errorStyle}>{error}</p> : null}
+          {error ? <p className="tn-error">{error}</p> : null}
 
-        <button type="submit" disabled={submitting} style={buttonStyle}>
-          {submitting ? "Signing in..." : "Sign In"}
-        </button>
-      </form>
+          <button type="submit" disabled={submitting} className="tn-btn tn-btn-primary">
+            {submitting ? "Signing in..." : "Sign In"}
+          </button>
+        </form>
 
-      <p>
-        Need an account? <Link to="/signup">Create one</Link>
-      </p>
-    </div>
+        <p className="tn-note">
+          Need an account? <Link to="/signup">Create one</Link>
+        </p>
+      </section>
+    </main>
   );
 }
-
-const containerStyle = {
-  maxWidth: 420,
-  margin: "40px auto",
-  padding: 24,
-  border: "1px solid #ddd",
-  borderRadius: 12,
-};
-
-const formStyle = {
-  display: "grid",
-  gap: 12,
-  marginBottom: 12,
-};
-
-const labelStyle = {
-  display: "grid",
-  gap: 6,
-  fontWeight: 600,
-};
-
-const inputStyle = {
-  padding: 10,
-  borderRadius: 8,
-  border: "1px solid #ccc",
-};
-
-const buttonStyle = {
-  padding: 10,
-  border: "none",
-  borderRadius: 8,
-  cursor: "pointer",
-};
-
-const errorStyle = {
-  margin: 0,
-  color: "#9c1c1c",
-};

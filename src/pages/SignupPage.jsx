@@ -68,108 +68,73 @@ export default function SignupPage() {
   }
 
   return (
-    <div style={containerStyle}>
-      <h1>Create Parent Account</h1>
-      <p style={{ marginTop: 0 }}>Therapist/admin roles are assigned by backend claims or profile updates.</p>
+    <main className="tn-auth-page">
+      <section className="tn-card">
+      <p className="tn-eyebrow">Titonova NeuroVoice</p>
+      <h1 className="tn-title">Create Parent Account</h1>
+      <p className="tn-subtitle">Therapist/admin roles are assigned by backend claims or profile updates.</p>
       {selectedPlan ? (
-        <p style={{ marginTop: 0 }}>
+        <p className="tn-note" style={{ marginBottom: 12 }}>
           Selected plan: <strong>{selectedPlan.name}</strong> ({selectedPlan.priceLabel}). After signup, go to{" "}
           <Link to="/pricing">Pricing</Link> to complete checkout.
         </p>
       ) : null}
 
-      <form onSubmit={handleSubmit} style={formStyle}>
-        <label style={labelStyle}>
+      <form onSubmit={handleSubmit} className="tn-form">
+        <label className="tn-label">
           Display name
           <input
             type="text"
             value={displayName}
             onChange={(event) => setDisplayName(event.target.value)}
-            style={inputStyle}
+            className="tn-input"
           />
         </label>
 
-        <label style={labelStyle}>
+        <label className="tn-label">
           Email
           <input
             required
             type="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            style={inputStyle}
+            className="tn-input"
           />
         </label>
 
-        <label style={labelStyle}>
+        <label className="tn-label">
           Password
           <input
             required
             type="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
-            style={inputStyle}
+            className="tn-input"
           />
         </label>
 
-        <label style={labelStyle}>
+        <label className="tn-label">
           Confirm password
           <input
             required
             type="password"
             value={confirmPassword}
             onChange={(event) => setConfirmPassword(event.target.value)}
-            style={inputStyle}
+            className="tn-input"
           />
         </label>
 
-        {error ? <p style={errorStyle}>{error}</p> : null}
+        {error ? <p className="tn-error">{error}</p> : null}
 
-        <button type="submit" disabled={submitting} style={buttonStyle}>
+        <button type="submit" disabled={submitting} className="tn-btn tn-btn-primary">
           {submitting ? "Creating account..." : "Create account"}
         </button>
       </form>
 
-      <p>
+      <p className="tn-note">
         Already have an account? <Link to="/login">Sign in</Link>
       </p>
-    </div>
+      </section>
+    </main>
   );
 }
-
-const containerStyle = {
-  maxWidth: 460,
-  margin: "40px auto",
-  padding: 24,
-  border: "1px solid #ddd",
-  borderRadius: 12,
-};
-
-const formStyle = {
-  display: "grid",
-  gap: 12,
-  marginBottom: 12,
-};
-
-const labelStyle = {
-  display: "grid",
-  gap: 6,
-  fontWeight: 600,
-};
-
-const inputStyle = {
-  padding: 10,
-  borderRadius: 8,
-  border: "1px solid #ccc",
-};
-
-const buttonStyle = {
-  padding: 10,
-  border: "none",
-  borderRadius: 8,
-  cursor: "pointer",
-};
-
-const errorStyle = {
-  margin: 0,
-  color: "#9c1c1c",
-};

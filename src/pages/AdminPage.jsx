@@ -2099,29 +2099,32 @@ const pageStyle = {
   maxWidth: 1260,
   margin: "40px auto",
   padding: 24,
+  color: "#e7f4ff",
 };
 
 const subtitleStyle = {
   marginTop: 0,
-  color: "#3a4c69",
+  color: "#a8c8e8",
 };
 
 const rolesStyle = {
   marginTop: 0,
-  color: "#4b607f",
+  color: "#95b7da",
 };
 
 const panelStyle = {
-  border: "1px solid #d6deea",
+  border: "1px solid rgba(133, 174, 218, 0.34)",
   borderRadius: 12,
   padding: 14,
   marginBottom: 12,
-  background: "#fff",
+  background: "linear-gradient(165deg, rgba(8, 22, 43, 0.86), rgba(7, 19, 37, 0.9))",
+  boxShadow: "0 18px 34px rgba(2, 9, 20, 0.4)",
 };
 
 const panelHeadingStyle = {
   marginTop: 0,
   marginBottom: 10,
+  color: "#ebf7ff",
 };
 
 const headerFilterGridStyle = {
@@ -2140,24 +2143,25 @@ const navRowStyle = {
 const metadataLineStyle = {
   marginBottom: 0,
   marginTop: 10,
-  color: "#51627f",
+  color: "#89aacd",
   fontSize: 13,
 };
 
 const linkStyle = {
   padding: "8px 12px",
-  border: "1px solid #bfcae2",
+  border: "1px solid rgba(140, 182, 227, 0.55)",
   borderRadius: 8,
   textDecoration: "none",
-  background: "#f8fbff",
-  color: "#203355",
+  background: "rgba(14, 34, 59, 0.76)",
+  color: "#dceeff",
 };
 
 const buttonStyle = {
   padding: "8px 12px",
   borderRadius: 8,
-  border: "1px solid #b9c6dc",
-  background: "#f3f7ff",
+  border: "1px solid rgba(136, 176, 219, 0.52)",
+  background: "rgba(12, 29, 52, 0.8)",
+  color: "#ddecff",
   cursor: "pointer",
 };
 
@@ -2165,12 +2169,15 @@ const labelStyle = {
   display: "grid",
   gap: 6,
   fontWeight: 600,
+  color: "#c9def3",
 };
 
 const inputStyle = {
   padding: "8px 10px",
   borderRadius: 8,
-  border: "1px solid #c7d0df",
+  border: "1px solid rgba(135, 173, 215, 0.52)",
+  background: "rgba(5, 18, 34, 0.86)",
+  color: "#e9f5ff",
 };
 
 const metricGridStyle = {
@@ -2187,29 +2194,30 @@ const pilotSummaryGridStyle = {
 };
 
 const metricCardStyle = {
-  border: "1px solid #d4dceb",
+  border: "1px solid rgba(130, 170, 213, 0.34)",
   borderRadius: 10,
   padding: 10,
-  background: "#f7f9ff",
+  background: "rgba(10, 28, 50, 0.72)",
 };
 
 const metricLabelStyle = {
   display: "block",
   fontSize: 12,
-  color: "#4e5f79",
+  color: "#9ec0e1",
   textTransform: "uppercase",
 };
 
 const metricValueStyle = {
   fontSize: 24,
   lineHeight: 1.1,
+  color: "#eaf7ff",
 };
 
 const metricHintStyle = {
   display: "block",
   marginTop: 4,
   fontSize: 11,
-  color: "#5b6f8c",
+  color: "#8eaed1",
   textTransform: "uppercase",
 };
 
@@ -2220,15 +2228,16 @@ const chartSectionStyle = {
 };
 
 const chartCardStyle = {
-  border: "1px solid #d5ddee",
+  border: "1px solid rgba(133, 173, 216, 0.34)",
   borderRadius: 10,
-  background: "#f7f9ff",
+  background: "rgba(10, 28, 50, 0.74)",
   padding: 10,
 };
 
 const chartTitleStyle = {
   display: "block",
   marginBottom: 8,
+  color: "#e8f5ff",
 };
 
 const chartGridStyle = {
@@ -2271,14 +2280,14 @@ const dualRateBarStyle = {
 
 const barLabelStyle = {
   fontSize: 10,
-  color: "#5b6a85",
+  color: "#8daece",
 };
 
 const chartMetaStyle = {
   marginBottom: 0,
   marginTop: 8,
   fontSize: 12,
-  color: "#51627f",
+  color: "#8aaaca",
 };
 
 const detailHeaderStyle = {
@@ -2293,12 +2302,12 @@ const detailHeaderStyle = {
 const detailNameStyle = {
   display: "block",
   fontSize: 20,
-  color: "#203355",
+  color: "#e9f6ff",
 };
 
 const detailMetaStyle = {
   margin: "2px 0",
-  color: "#4e5f79",
+  color: "#95b5d8",
   fontSize: 13,
 };
 
@@ -2317,7 +2326,7 @@ const comparisonHeadingStyle = {
   marginTop: 0,
   marginBottom: 8,
   fontSize: 15,
-  color: "#2a3f60",
+  color: "#d9ecff",
 };
 
 const comparisonGridStyle = {
@@ -2327,9 +2336,9 @@ const comparisonGridStyle = {
 };
 
 const comparisonCardStyle = {
-  border: "1px solid #d4deef",
+  border: "1px solid rgba(132, 171, 215, 0.34)",
   borderRadius: 10,
-  background: "#f7f9ff",
+  background: "rgba(10, 28, 50, 0.74)",
   padding: 10,
   display: "grid",
   gap: 6,
@@ -2337,7 +2346,7 @@ const comparisonCardStyle = {
 
 const comparisonLabelStyle = {
   fontSize: 13,
-  color: "#2a3f60",
+  color: "#d9ecff",
 };
 
 const comparisonRowStyle = {
@@ -2345,7 +2354,7 @@ const comparisonRowStyle = {
   justifyContent: "space-between",
   gap: 8,
   fontSize: 12,
-  color: "#4e5f79",
+  color: "#98b8d9",
 };
 
 const comparisonDeltaStyle = (isPositive = true) => ({
@@ -2361,15 +2370,15 @@ const listStyle = {
 };
 
 const mutedStyle = {
-  color: "#5c6d87",
+  color: "#8eaecf",
 };
 
 const superAdminNoticeStyle = {
   marginTop: 8,
   marginBottom: 8,
-  color: "#5c4a16",
-  background: "#fff6de",
-  border: "1px solid #efd69a",
+  color: "#ffe5a3",
+  background: "rgba(97, 72, 14, 0.45)",
+  border: "1px solid rgba(242, 207, 122, 0.58)",
   borderRadius: 8,
   padding: "8px 10px",
   fontSize: 13,
@@ -2377,7 +2386,7 @@ const superAdminNoticeStyle = {
 
 const tableWrapperStyle = {
   overflowX: "auto",
-  border: "1px solid #d4deef",
+  border: "1px solid rgba(132, 171, 214, 0.34)",
   borderRadius: 10,
 };
 
@@ -2392,17 +2401,17 @@ const thStyle = {
   fontSize: 12,
   textTransform: "uppercase",
   letterSpacing: 0.3,
-  color: "#4d5f7b",
+  color: "#9cbce0",
   padding: 8,
-  borderBottom: "1px solid #d4deef",
-  background: "#f7f9ff",
+  borderBottom: "1px solid rgba(132, 171, 214, 0.32)",
+  background: "rgba(10, 26, 47, 0.8)",
 };
 
 const tdStyle = {
   padding: 8,
-  borderBottom: "1px solid #edf1f8",
+  borderBottom: "1px solid rgba(121, 159, 201, 0.2)",
   fontSize: 13,
-  color: "#1f3557",
+  color: "#d8ebff",
 };
 
 const tablePrimaryTextStyle = {
@@ -2412,7 +2421,7 @@ const tablePrimaryTextStyle = {
 const tableSecondaryTextStyle = {
   marginTop: 2,
   fontSize: 11,
-  color: "#5c6d87",
+  color: "#8baaca",
 };
 
 const activityPillStyle = (level = "inactive") => {
