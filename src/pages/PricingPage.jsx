@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { getBillingHealth, getSubscriptionStatus } from "../lib/billingClient";
@@ -40,6 +40,8 @@ export default function PricingPage() {
   const [billingInterval, setBillingInterval] = useState(BILLING_INTERVALS.MONTH);
   const [billingHealth, setBillingHealth] = useState(null);
   const [viewport, setViewport] = useState({ width: 0, height: 0 });
+  const [fitScale, setFitScale] = useState(1);
+  const pricingContentRef = useRef(null);
 
   const query = useMemo(() => new URLSearchParams(location.search), [location.search]);
   const checkoutStatus = String(query.get("checkout") ?? "").trim().toLowerCase();
@@ -83,6 +85,40 @@ export default function PricingPage() {
       window.removeEventListener("resize", syncViewport);
     };
   }, []);
+
+  useEffect(() => {
+    const target = pricingContentRef.current;
+    if (!target) return;
+
+    let rafId = 0;
+    const computeFitScale = () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const viewportHeight = window.innerHeight;
+        const contentHeight = target.scrollHeight;
+        if (!viewportHeight || !contentHeight) return;
+        const available = Math.max(420, viewportHeight - 8);
+        const nextScale =
+          contentHeight <= available ? 1 : Math.max(0.72, Math.min(1, available / contentHeight));
+        setFitScale(Number(nextScale.toFixed(3)));
+      });
+    };
+
+    computeFitScale();
+    window.addEventListener("resize", computeFitScale);
+
+    let observer = null;
+    if (typeof ResizeObserver !== "undefined") {
+      observer = new ResizeObserver(computeFitScale);
+      observer.observe(target);
+    }
+
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      window.removeEventListener("resize", computeFitScale);
+      if (observer) observer.disconnect();
+    };
+  }, [billingInterval, loading, error, message, busyKey, checkoutStatus, planTier, subscriptionStatus]);
 
   useEffect(() => {
     if (checkoutStatus !== "success") return;
@@ -232,9 +268,18 @@ export default function PricingPage() {
     : currentPlanButtonStyle;
   const resolvedCheckoutButtonStyle = isLaptopCompact ? compactCheckoutButtonStyle : checkoutButtonStyle;
   const resolvedAnnualFallbackStyle = isLaptopCompact ? compactAnnualFallbackStyle : annualFallbackStyle;
+  const fitScaleStyle = fitScale < 0.999
+    ? {
+        transform: `scale(${fitScale})`,
+        transformOrigin: "top center",
+        width: `${(100 / fitScale).toFixed(3)}%`,
+        margin: "0 auto",
+      }
+    : null;
 
   return (
     <main style={resolvedPageStyle}>
+      <div ref={pricingContentRef} style={fitScaleStyle ?? undefined}>
       <section style={resolvedHeroStyle}>
         <p style={eyebrowStyle}>Billing</p>
         <h1 style={resolvedTitleStyle}>Choose your Titonova NeuroVoice plan</h1>
@@ -351,6 +396,7 @@ export default function PricingPage() {
           );
         })}
       </section>
+      </div>
     </main>
   );
 }
