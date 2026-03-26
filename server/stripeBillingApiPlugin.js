@@ -710,8 +710,6 @@ export function createStripeBillingMiddleware(env = {}) {
       if (enablePhoneCollection) {
         formData.append("phone_number_collection[enabled]", "true");
       }
-      formData.append("customer_update[address]", "auto");
-      formData.append("customer_update[name]", "auto");
       if (trialDays > 0) {
         formData.append("subscription_data[trial_period_days]", String(trialDays));
       }
@@ -731,6 +729,9 @@ export function createStripeBillingMiddleware(env = {}) {
       }
       if (stripeCustomerId) {
         formData.append("customer", stripeCustomerId);
+        // Stripe only allows customer_update when an existing customer is attached.
+        formData.append("customer_update[address]", "auto");
+        formData.append("customer_update[name]", "auto");
       } else if (email) {
         formData.append("customer_email", email);
       }
