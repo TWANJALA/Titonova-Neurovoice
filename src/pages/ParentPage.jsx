@@ -6553,12 +6553,12 @@ export default function ParentPage() {
         </div>
 
         <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", flex: "1 1 320px", justifyContent: "flex-end" }}>
-          {hasAnyRole([ROLES.THERAPIST, ROLES.ADMIN]) ? (
+          {hasAnyRole([ROLES.THERAPIST, ROLES.ADMIN, ROLES.SUPER_ADMIN]) ? (
             <Link to="/therapist" style={linkPillStyle}>
               Therapist View
             </Link>
           ) : null}
-          {hasAnyRole([ROLES.ADMIN]) ? (
+          {hasAnyRole([ROLES.ADMIN, ROLES.SUPER_ADMIN]) ? (
             <Link to="/admin" style={linkPillStyle}>
               Admin View
             </Link>

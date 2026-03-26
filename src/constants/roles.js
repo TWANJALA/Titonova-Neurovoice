@@ -2,9 +2,10 @@ export const ROLES = {
   PARENT: "parent",
   THERAPIST: "therapist",
   ADMIN: "admin",
+  SUPER_ADMIN: "super_admin",
 };
 
-export const ALL_ROLES = [ROLES.PARENT, ROLES.THERAPIST, ROLES.ADMIN];
+export const ALL_ROLES = [ROLES.PARENT, ROLES.THERAPIST, ROLES.ADMIN, ROLES.SUPER_ADMIN];
 
 export function normalizeRoles(value) {
   if (!value) return [];

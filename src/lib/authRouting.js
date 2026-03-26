@@ -1,15 +1,16 @@
 import { ROLES, hasAnyRole, normalizeRoles } from "../constants/roles";
 
 const ROLE_HOME_PRIORITY = [
+  { role: ROLES.SUPER_ADMIN, path: "/admin" },
   { role: ROLES.ADMIN, path: "/admin" },
   { role: ROLES.THERAPIST, path: "/therapist" },
   { role: ROLES.PARENT, path: "/app" },
 ];
 
 const PROTECTED_PATH_RULES = [
-  { prefix: "/admin", roles: [ROLES.ADMIN] },
-  { prefix: "/mco", roles: [ROLES.ADMIN] },
-  { prefix: "/therapist", roles: [ROLES.THERAPIST, ROLES.ADMIN] },
+  { prefix: "/admin", roles: [ROLES.ADMIN, ROLES.SUPER_ADMIN] },
+  { prefix: "/mco", roles: [ROLES.ADMIN, ROLES.SUPER_ADMIN] },
+  { prefix: "/therapist", roles: [ROLES.THERAPIST, ROLES.ADMIN, ROLES.SUPER_ADMIN] },
 ];
 
 const NON_TARGET_PATHS = new Set(["", "/", "/login", "/signup", "/unauthorized"]);

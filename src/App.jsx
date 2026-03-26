@@ -57,11 +57,11 @@ export default function App() {
           <Route path="/unauthorized" element={<UnauthorizedPage />} />
           <Route path="/app" element={<ParentPage />} />
 
-          <Route element={<ProtectedRoute allowedRoles={[ROLES.THERAPIST, ROLES.ADMIN]} />}>
+          <Route element={<ProtectedRoute allowedRoles={[ROLES.THERAPIST, ROLES.ADMIN, ROLES.SUPER_ADMIN]} />}>
             <Route path="/therapist" element={<TherapistPage />} />
           </Route>
 
-          <Route element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]} />}>
+          <Route element={<ProtectedRoute allowedRoles={[ROLES.ADMIN, ROLES.SUPER_ADMIN]} />}>
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/mco" element={<McoDashboard />} />
           </Route>

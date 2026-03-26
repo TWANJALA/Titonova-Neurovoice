@@ -1050,7 +1050,7 @@ export default function TherapistPage() {
 
       <div style={navRowStyle}>
         <Link to="/app" style={linkStyle}>Go to Titonova NeuroVoice</Link>
-        {hasAnyRole([ROLES.ADMIN]) ? (
+        {hasAnyRole([ROLES.ADMIN, ROLES.SUPER_ADMIN]) ? (
           <Link to="/admin" style={linkStyle}>
             Go to admin
           </Link>

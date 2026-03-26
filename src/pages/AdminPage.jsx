@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { Link } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
+import { ROLES } from "../constants/roles";
 import { db } from "../firebase";
 import {
   buildChildOutcomeReport,
@@ -45,6 +46,56 @@ function downloadTextFile(filename, content, mimeType) {
 function normalizeFilterValue(value, fallback = "unassigned") {
   const parsed = String(value ?? "").trim();
   return parsed || fallback;
+}
+
+function sumNumericMap(values = {}) {
+  return Object.values(values ?? {}).reduce((sum, value) => {
+    const parsed = Number(value ?? 0);
+    return Number.isFinite(parsed) && parsed > 0 ? sum + parsed : sum;
+  }, 0);
+}
+
+function getRoleLabels(value) {
+  const raw = Array.isArray(value) ? value : [value];
+  const roles = raw
+    .map((entry) => String(entry ?? "").trim().toLowerCase())
+    .filter(Boolean);
+  if (roles.length === 0) return ["parent"];
+  return [...new Set(roles)];
+}
+
+function formatRoleLabels(value) {
+  return getRoleLabels(value)
+    .map((role) => role.replace(/_/g, " "))
+    .join(", ");
+}
+
+function getChildDailyAttempts(child = {}, keys = []) {
+  const counts = child?.preferences?.dailySentenceCounts ?? {};
+  return keys.reduce((sum, key) => sum + Number(counts[key] ?? 0), 0);
+}
+
+function getChildLastActiveDate(child = {}) {
+  const directCandidates = [child?.stats?.lastActive, child?.updatedAt]
+    .map((value) => toDateLike(value))
+    .filter(Boolean);
+
+  const eventCandidates = [];
+  const events = Array.isArray(child?.model?.sentenceEvents)
+    ? child.model.sentenceEvents
+    : Array.isArray(child?.smartModel?.sentenceEvents)
+      ? child.smartModel.sentenceEvents
+      : [];
+
+  events.forEach((entry) => {
+    if (!entry || typeof entry !== "object") return;
+    const stamp = toDateLike(entry.ts);
+    if (stamp) eventCandidates.push(stamp);
+  });
+
+  const all = [...directCandidates, ...eventCandidates];
+  if (all.length === 0) return null;
+  return all.sort((a, b) => b.getTime() - a.getTime())[0];
 }
 
 function escapeHtml(value) {
@@ -483,8 +534,10 @@ function openPrintableReport(title, sections = []) {
 }
 
 export default function AdminPage() {
-  const { roles, signOut } = useAuth();
+  const { roles, signOut, hasAnyRole } = useAuth();
+  const isSuperAdmin = hasAnyRole([ROLES.SUPER_ADMIN]);
   const [populationChildrenRaw, setPopulationChildrenRaw] = useState([]);
+  const [populationUsersRaw, setPopulationUsersRaw] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [pmpmInput, setPmpmInput] = useState("10");
@@ -549,6 +602,141 @@ export default function AdminPage() {
         region: normalizeFilterValue(entry?.profile?.region),
       })),
     [populationChildrenRaw, periodDays, baselineOptions]
+  );
+
+  const populationUsers = useMemo(
+    () =>
+      populationUsersRaw.map((entry) => ({
+        uid: String(entry?.uid ?? "").trim(),
+        email: String(entry?.email ?? "").trim(),
+        displayName: String(entry?.displayName ?? "").trim(),
+        roles: getRoleLabels(entry?.roles ?? entry?.role),
+        rolesLabel: formatRoleLabels(entry?.roles ?? entry?.role),
+        createdAt: toDateLike(entry?.createdAt),
+      })),
+    [populationUsersRaw]
+  );
+
+  const recent7Keys = useMemo(() => recentDayKeys(7, reportNow), [reportNow]);
+  const recent14Keys = useMemo(() => recentDayKeys(14, reportNow), [reportNow]);
+
+  const userActivityRows = useMemo(() => {
+    const childrenByParent = new Map();
+    populationChildren.forEach((child) => {
+      const key = String(child?.parentUid ?? "").trim();
+      if (!key) return;
+      const bucket = childrenByParent.get(key) ?? [];
+      bucket.push(child);
+      childrenByParent.set(key, bucket);
+    });
+
+    return populationUsers.map((user) => {
+      const children = childrenByParent.get(user.uid) ?? [];
+      const attempts7d = children.reduce(
+        (sum, child) => sum + getChildDailyAttempts(child, recent7Keys),
+        0
+      );
+      const attemptsByDay = recent14Keys.reduce((map, key) => {
+        map[key] = children.reduce((sum, child) => {
+          const counts = child?.preferences?.dailySentenceCounts ?? {};
+          return sum + Number(counts[key] ?? 0);
+        }, 0);
+        return map;
+      }, {});
+      const activeChildren7d = children.filter((child) => getChildDailyAttempts(child, recent7Keys) > 0).length;
+      const highRiskChildren = children.filter((child) => Boolean(child?.outcomes?.highRisk)).length;
+
+      const autoTotals = children.reduce(
+        (acc, child) => {
+          const learning =
+            child?.model?.autoSentenceLearning ??
+            child?.smartModel?.autoSentenceLearning ??
+            {};
+          acc.shown += sumNumericMap(learning.shownCounts ?? {});
+          acc.accepted += sumNumericMap(learning.acceptedCounts ?? {});
+          return acc;
+        },
+        { shown: 0, accepted: 0 }
+      );
+      const autoAcceptRate = autoTotals.shown > 0 ? autoTotals.accepted / autoTotals.shown : 0;
+
+      const lastActiveCandidates = children
+        .map((child) => getChildLastActiveDate(child))
+        .filter(Boolean);
+      const lastActive =
+        lastActiveCandidates.length > 0
+          ? lastActiveCandidates.sort((a, b) => b.getTime() - a.getTime())[0]
+          : null;
+
+      const activityLevel =
+        attempts7d >= 35 ? "high" : attempts7d >= 8 ? "medium" : attempts7d > 0 ? "low" : "inactive";
+
+      return {
+        ...user,
+        userLabel: user.displayName || user.email || user.uid || "Unknown user",
+        childCount: children.length,
+        attempts7d,
+        attemptsByDay,
+        activeChildren7d,
+        highRiskChildren,
+        autoAcceptRate,
+        lastActive,
+        activityLevel,
+      };
+    });
+  }, [populationUsers, populationChildren, recent7Keys, recent14Keys]);
+
+  const sortedUserActivityRows = useMemo(
+    () =>
+      [...userActivityRows].sort(
+        (a, b) =>
+          Number(b.attempts7d ?? 0) - Number(a.attempts7d ?? 0) ||
+          Number(b.activeChildren7d ?? 0) - Number(a.activeChildren7d ?? 0) ||
+          String(a.userLabel ?? "").localeCompare(String(b.userLabel ?? ""))
+      ),
+    [userActivityRows]
+  );
+
+  const superAdminSummary = useMemo(() => {
+    const totalUsers = sortedUserActivityRows.length;
+    const activeUsers7d = sortedUserActivityRows.filter((row) => Number(row.attempts7d ?? 0) > 0).length;
+    const highActivityUsers = sortedUserActivityRows.filter((row) => row.activityLevel === "high").length;
+    const totalAttempts7d = sortedUserActivityRows.reduce((sum, row) => sum + Number(row.attempts7d ?? 0), 0);
+    const avgAttemptsPerActiveUser = totalAttempts7d / Math.max(1, activeUsers7d);
+    const usersWithRiskChildren = sortedUserActivityRows.filter((row) => Number(row.highRiskChildren ?? 0) > 0).length;
+    const nowMs = reportNow.getTime();
+    const newUsers30d = sortedUserActivityRows.filter((row) => {
+      if (!(row.createdAt instanceof Date)) return false;
+      const daysSince = (nowMs - row.createdAt.getTime()) / (24 * 60 * 60 * 1000);
+      return daysSince >= 0 && daysSince <= 30;
+    }).length;
+
+    return {
+      totalUsers,
+      activeUsers7d,
+      highActivityUsers,
+      totalAttempts7d,
+      avgAttemptsPerActiveUser,
+      usersWithRiskChildren,
+      newUsers30d,
+      activeRatePct: Math.round((activeUsers7d / Math.max(1, totalUsers)) * 100),
+    };
+  }, [sortedUserActivityRows, reportNow]);
+
+  const superAdminTrendSeries = useMemo(
+    () =>
+      recent14Keys.map((key) => {
+        const attempts = sortedUserActivityRows.reduce(
+          (sum, row) => sum + Number(row.attemptsByDay?.[key] ?? 0),
+          0
+        );
+        const activeUsers = sortedUserActivityRows.reduce(
+          (sum, row) => sum + (Number(row.attemptsByDay?.[key] ?? 0) > 0 ? 1 : 0),
+          0
+        );
+        return { key, label: key.slice(5), attempts, activeUsers };
+      }),
+    [recent14Keys, sortedUserActivityRows]
   );
 
   const filterOptions = useMemo(() => {
@@ -636,6 +824,14 @@ export default function AdminPage() {
   const maxAttemptValue = Math.max(1, ...attemptsSeries.map((entry) => Number(entry.value ?? 0)));
   const maxUniqueValue = Math.max(1, ...uniqueWordsSeries.map((entry) => Number(entry.value ?? 0)));
   const maxSentenceLengthValue = Math.max(1, ...sentenceLengthSeries.map((entry) => Number(entry.value ?? 0)));
+  const maxSuperAdminAttemptValue = Math.max(
+    1,
+    ...superAdminTrendSeries.map((entry) => Number(entry.attempts ?? 0))
+  );
+  const maxSuperAdminActiveUsers = Math.max(
+    1,
+    ...superAdminTrendSeries.map((entry) => Number(entry.activeUsers ?? 0))
+  );
   const autoQualityTotals = useMemo(
     () =>
       autoQualitySeries.reduce(
@@ -846,6 +1042,10 @@ export default function AdminPage() {
     setError("");
     try {
       const usersSnapshot = await getDocs(collection(db, "users"));
+      const usersRaw = usersSnapshot.docs.map((userDoc) => ({
+        uid: userDoc.id,
+        ...(userDoc.data() ?? {}),
+      }));
       const perUserChildren = await Promise.all(
         usersSnapshot.docs.map(async (userDoc) => {
           const parentUid = userDoc.id;
@@ -856,10 +1056,12 @@ export default function AdminPage() {
         })
       );
 
+      setPopulationUsersRaw(usersRaw);
       setPopulationChildrenRaw(perUserChildren.flat());
     } catch (loadError) {
       console.error("Failed to load population dashboard:", loadError);
       setError(loadError.message || "Unable to load population metrics.");
+      setPopulationUsersRaw([]);
       setPopulationChildrenRaw([]);
     } finally {
       setLoading(false);
@@ -924,6 +1126,42 @@ export default function AdminPage() {
 
     downloadTextFile(
       `mco-population-dashboard-${dateRange}-${Date.now()}.csv`,
+      `${toCsv(rows)}\n`,
+      "text/csv;charset=utf-8"
+    );
+  }
+
+  function exportUserActivityCsv() {
+    if (sortedUserActivityRows.length === 0) return;
+    const rows = [
+      [
+        "user_uid",
+        "name",
+        "email",
+        "roles",
+        "children",
+        "attempts_7d",
+        "active_children_7d",
+        "auto_accept_rate_pct",
+        "high_risk_children",
+        "last_active",
+      ],
+      ...sortedUserActivityRows.map((row) => [
+        row.uid,
+        row.userLabel,
+        row.email,
+        row.rolesLabel,
+        row.childCount,
+        row.attempts7d,
+        row.activeChildren7d,
+        Math.round(Number(row.autoAcceptRate ?? 0) * 100),
+        row.highRiskChildren,
+        row.lastActive instanceof Date ? row.lastActive.toISOString() : "",
+      ]),
+    ];
+
+    downloadTextFile(
+      `super-admin-user-activity-${dateRange}-${Date.now()}.csv`,
       `${toCsv(rows)}\n`,
       "text/csv;charset=utf-8"
     );
@@ -1301,6 +1539,132 @@ export default function AdminPage() {
       </section>
 
       {error ? <p style={errorStyle}>{error}</p> : null}
+
+      <section style={panelStyle}>
+        <h2 style={panelHeadingStyle}>Super Admin Activity Dashboard</h2>
+        <p style={mutedStyle}>
+          Global user activity across all accounts, including engagement, risk exposure, and adaptive AI quality.
+        </p>
+        {isSuperAdmin ? (
+          <>
+            <div style={navRowStyle}>
+              <button onClick={exportUserActivityCsv} style={buttonStyle} disabled={sortedUserActivityRows.length === 0}>
+                Export User Activity CSV
+              </button>
+            </div>
+            <div style={metricGridStyle}>
+              <div style={metricCardStyle}>
+                <span style={metricLabelStyle}>Total users</span>
+                <strong style={metricValueStyle}>{superAdminSummary.totalUsers}</strong>
+              </div>
+              <div style={metricCardStyle}>
+                <span style={metricLabelStyle}>Active users (7d)</span>
+                <strong style={metricValueStyle}>{superAdminSummary.activeUsers7d}</strong>
+                <span style={metricHintStyle}>{superAdminSummary.activeRatePct}% active rate</span>
+              </div>
+              <div style={metricCardStyle}>
+                <span style={metricLabelStyle}>Total attempts (7d)</span>
+                <strong style={metricValueStyle}>{Math.round(superAdminSummary.totalAttempts7d)}</strong>
+              </div>
+              <div style={metricCardStyle}>
+                <span style={metricLabelStyle}>Avg attempts / active user</span>
+                <strong style={metricValueStyle}>{superAdminSummary.avgAttemptsPerActiveUser.toFixed(1)}</strong>
+              </div>
+              <div style={metricCardStyle}>
+                <span style={metricLabelStyle}>High-activity users</span>
+                <strong style={metricValueStyle}>{superAdminSummary.highActivityUsers}</strong>
+              </div>
+              <div style={metricCardStyle}>
+                <span style={metricLabelStyle}>Users with risk cases</span>
+                <strong style={metricValueStyle}>{superAdminSummary.usersWithRiskChildren}</strong>
+              </div>
+              <div style={metricCardStyle}>
+                <span style={metricLabelStyle}>New users (30d)</span>
+                <strong style={metricValueStyle}>{superAdminSummary.newUsers30d}</strong>
+              </div>
+            </div>
+
+            <div style={chartSectionStyle}>
+              <article style={chartCardStyle}>
+                <strong style={chartTitleStyle}>Daily active users (14d)</strong>
+                <div style={chartGridStyle}>
+                  {superAdminTrendSeries.map((entry) => (
+                    <div key={`super-active-${entry.key}`} style={barCellStyle} title={`${entry.key}: ${entry.activeUsers} users`}>
+                      <div
+                        style={{
+                          ...barStyle,
+                          height: `${Math.max(6, (Number(entry.activeUsers ?? 0) / maxSuperAdminActiveUsers) * 100)}%`,
+                          background: "linear-gradient(180deg, #4c9bff, #2d66d8)",
+                        }}
+                      />
+                      <span style={barLabelStyle}>{entry.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </article>
+              <article style={chartCardStyle}>
+                <strong style={chartTitleStyle}>Daily communication attempts (14d)</strong>
+                <div style={chartGridStyle}>
+                  {superAdminTrendSeries.map((entry) => (
+                    <div key={`super-attempt-${entry.key}`} style={barCellStyle} title={`${entry.key}: ${entry.attempts} attempts`}>
+                      <div
+                        style={{
+                          ...barStyle,
+                          height: `${Math.max(6, (Number(entry.attempts ?? 0) / maxSuperAdminAttemptValue) * 100)}%`,
+                          background: "linear-gradient(180deg, #41d8a0, #1f9f6b)",
+                        }}
+                      />
+                      <span style={barLabelStyle}>{entry.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </article>
+            </div>
+
+            <div style={{ ...tableWrapperStyle, marginTop: 10 }}>
+              <table style={tableStyle}>
+                <thead>
+                  <tr>
+                    <th style={thStyle}>User</th>
+                    <th style={thStyle}>Role</th>
+                    <th style={thStyle}>Children</th>
+                    <th style={thStyle}>Attempts (7d)</th>
+                    <th style={thStyle}>Active children</th>
+                    <th style={thStyle}>Auto accept</th>
+                    <th style={thStyle}>Risk cases</th>
+                    <th style={thStyle}>Activity</th>
+                    <th style={thStyle}>Last active</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortedUserActivityRows.slice(0, 250).map((row) => (
+                    <tr key={`user-activity-${row.uid}`} style={tableRowStyle}>
+                      <td style={tdStyle}>
+                        <div style={tablePrimaryTextStyle}>{row.userLabel}</div>
+                        <div style={tableSecondaryTextStyle}>{row.uid}</div>
+                      </td>
+                      <td style={tdStyle}>{row.rolesLabel}</td>
+                      <td style={tdStyle}>{row.childCount}</td>
+                      <td style={tdStyle}>{Math.round(row.attempts7d)}</td>
+                      <td style={tdStyle}>{row.activeChildren7d}</td>
+                      <td style={tdStyle}>{Math.round(Number(row.autoAcceptRate ?? 0) * 100)}%</td>
+                      <td style={tdStyle}>{row.highRiskChildren}</td>
+                      <td style={tdStyle}>
+                        <span style={activityPillStyle(row.activityLevel)}>{row.activityLevel}</span>
+                      </td>
+                      <td style={tdStyle}>{row.lastActive instanceof Date ? row.lastActive.toLocaleString() : "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        ) : (
+          <p style={superAdminNoticeStyle}>
+            Super admin activity analytics are restricted. Assign the <strong>super_admin</strong> role to view global user activity.
+          </p>
+        )}
+      </section>
 
       <section style={panelStyle}>
         <h2 style={panelHeadingStyle}>KPI Summary</h2>
@@ -2000,6 +2364,17 @@ const mutedStyle = {
   color: "#5c6d87",
 };
 
+const superAdminNoticeStyle = {
+  marginTop: 8,
+  marginBottom: 8,
+  color: "#5c4a16",
+  background: "#fff6de",
+  border: "1px solid #efd69a",
+  borderRadius: 8,
+  padding: "8px 10px",
+  fontSize: 13,
+};
+
 const tableWrapperStyle = {
   overflowX: "auto",
   border: "1px solid #d4deef",
@@ -2028,6 +2403,70 @@ const tdStyle = {
   borderBottom: "1px solid #edf1f8",
   fontSize: 13,
   color: "#1f3557",
+};
+
+const tablePrimaryTextStyle = {
+  fontWeight: 600,
+};
+
+const tableSecondaryTextStyle = {
+  marginTop: 2,
+  fontSize: 11,
+  color: "#5c6d87",
+};
+
+const activityPillStyle = (level = "inactive") => {
+  const normalized = String(level ?? "").toLowerCase();
+  if (normalized === "high") {
+    return {
+      display: "inline-block",
+      borderRadius: 999,
+      padding: "2px 8px",
+      fontSize: 11,
+      textTransform: "uppercase",
+      border: "1px solid #1e9f65",
+      background: "#e6f8ef",
+      color: "#0f6a42",
+      fontWeight: 700,
+    };
+  }
+  if (normalized === "medium") {
+    return {
+      display: "inline-block",
+      borderRadius: 999,
+      padding: "2px 8px",
+      fontSize: 11,
+      textTransform: "uppercase",
+      border: "1px solid #c9a437",
+      background: "#fff6df",
+      color: "#7d5e09",
+      fontWeight: 700,
+    };
+  }
+  if (normalized === "low") {
+    return {
+      display: "inline-block",
+      borderRadius: 999,
+      padding: "2px 8px",
+      fontSize: 11,
+      textTransform: "uppercase",
+      border: "1px solid #6f9ecf",
+      background: "#edf4ff",
+      color: "#2a5784",
+      fontWeight: 700,
+    };
+  }
+  return {
+    display: "inline-block",
+    borderRadius: 999,
+    padding: "2px 8px",
+    fontSize: 11,
+    textTransform: "uppercase",
+    border: "1px solid #c8d1e0",
+    background: "#f5f8fd",
+    color: "#5d6f8b",
+    fontWeight: 700,
+  };
 };
 
 const tableRowStyle = {
