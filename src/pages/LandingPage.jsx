@@ -372,10 +372,17 @@ const styles = `
   }
 
   @media (max-width: 900px) {
+    .topbar {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
     .hero { grid-template-columns: 1fr; }
     .feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .metrics { grid-template-columns: 1fr; }
     .how-grid { grid-template-columns: 1fr; }
+    .radar { min-height: 260px; }
   }
 
   @media (max-width: 620px) {
@@ -383,6 +390,7 @@ const styles = `
     .hero-card { padding: 20px; }
     .feature-grid { grid-template-columns: 1fr; }
     .headline { font-size: clamp(1.9rem, 10vw, 2.6rem); }
+    .radar { min-height: 220px; }
   }
 
   @media (prefers-reduced-motion: reduce) {

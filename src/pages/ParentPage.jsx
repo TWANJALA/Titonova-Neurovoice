@@ -6529,8 +6529,8 @@ export default function ParentPage() {
       <div style={workspaceShellStyle}>
       <header style={headerStyle}>
         <div>
-          <h1 style={{ marginBottom: 8 }}>Titonova NeuroVoice</h1>
-          <p style={{ margin: 0 }}>
+          <h1 style={{ marginBottom: 8, marginTop: 0, fontSize: "clamp(1.25rem, 3.2vw, 2rem)" }}>Titonova NeuroVoice</h1>
+          <p style={{ margin: 0, lineHeight: 1.45 }}>
             {user ? `Signed in as ${user?.displayName || user?.email}` : "Guest mode (no account required)"} | Active
             child: {activeChildProfile.name} | Roles: {roles.join(", ") || ROLES.PARENT} | Plan:{" "}
             {activePlan.name} ({activePlan.priceLabel})
@@ -6538,7 +6538,7 @@ export default function ParentPage() {
           <p style={syncStatusStyle}>{syncSummary}</p>
         </div>
 
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+        <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", flex: "1 1 320px", justifyContent: "flex-end" }}>
           {hasAnyRole([ROLES.THERAPIST, ROLES.ADMIN]) ? (
             <Link to="/therapist" style={linkPillStyle}>
               Therapist View
@@ -8246,7 +8246,7 @@ const workspaceRootStyle = {
     "radial-gradient(1300px 620px at -10% -10%, rgba(25, 84, 151, 0.28), transparent 55%), radial-gradient(900px 520px at 95% 0%, rgba(0, 149, 117, 0.14), transparent 60%), linear-gradient(160deg, #050d1c 0%, #071326 46%, #050f1f 100%)",
   color: "#e9f4ff",
   position: "relative",
-  overflow: "hidden",
+  overflowX: "hidden",
 };
 
 const workspaceGlowOneStyle = {
@@ -8272,9 +8272,9 @@ const workspaceGlowTwoStyle = {
 };
 
 const workspaceShellStyle = {
-  width: "min(1220px, 96vw)",
+  width: "min(1220px, calc(100vw - 14px))",
   margin: "0 auto",
-  padding: "20px 0 40px",
+  padding: "clamp(12px, 2.4vw, 20px) 0 clamp(24px, 4vw, 40px)",
   position: "relative",
   zIndex: 2,
   fontFamily: "\"Space Grotesk\", \"Avenir Next\", \"Segoe UI\", sans-serif",
@@ -8284,9 +8284,10 @@ const headerStyle = {
   display: "flex",
   justifyContent: "space-between",
   alignItems: "flex-start",
+  flexWrap: "wrap",
   gap: 16,
   marginBottom: 16,
-  padding: 16,
+  padding: "clamp(12px, 2vw, 16px)",
   borderRadius: 16,
   background: "linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04))",
   border: "1px solid rgba(154, 190, 228, 0.26)",
@@ -8307,10 +8308,13 @@ const syncStatusStyle = {
 };
 
 const linkPillStyle = {
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
   color: "#d8edff",
   textDecoration: "none",
   border: "1px solid rgba(137, 176, 222, 0.65)",
-  padding: "10px 12px",
+  padding: "9px 12px",
   borderRadius: 12,
   background: "rgba(15, 32, 53, 0.58)",
 };
@@ -8353,7 +8357,7 @@ const childSwitcherStyle = {
 
 const childControlsStyle = {
   display: "grid",
-  gridTemplateColumns: "minmax(220px, 2fr) repeat(auto-fit, minmax(110px, 1fr))",
+  gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
   gap: 8,
   marginTop: 8,
 };
@@ -8362,7 +8366,7 @@ const panelCardStyle = {
   border: "1px solid rgba(139, 175, 215, 0.34)",
   background: "rgba(6, 18, 33, 0.84)",
   borderRadius: 14,
-  padding: 12,
+  padding: "clamp(10px, 1.7vw, 12px)",
   marginBottom: 12,
 };
 
@@ -8376,8 +8380,9 @@ const panelTitleStyle = {
 const modeSwitcherStyle = {
   ...panelCardStyle,
   display: "flex",
+  flexWrap: "wrap",
   justifyContent: "space-between",
-  alignItems: "center",
+  alignItems: "flex-start",
   gap: 10,
 };
 
@@ -8400,6 +8405,8 @@ const goalCardStyle = {
 const goalHeaderStyle = {
   display: "flex",
   justifyContent: "space-between",
+  flexWrap: "wrap",
+  gap: 8,
   marginBottom: 8,
   color: "#f0f9ff",
 };
@@ -8429,12 +8436,13 @@ const finderSectionStyle = {
 
 const finderControlsStyle = {
   display: "grid",
-  gridTemplateColumns: "minmax(220px, 2fr) minmax(130px, 1fr) auto auto",
+  gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
   gap: 8,
   marginTop: 8,
 };
 
 const textInputStyle = {
+  width: "100%",
   padding: 11,
   borderRadius: 12,
   border: "1px solid rgba(135, 172, 212, 0.5)",
@@ -8443,6 +8451,7 @@ const textInputStyle = {
 };
 
 const selectStyle = {
+  width: "100%",
   padding: 11,
   borderRadius: 12,
   border: "1px solid rgba(135, 172, 212, 0.5)",
@@ -8540,7 +8549,7 @@ const scanControlPanelStyle = {
 
 const voiceGridStyle = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+  gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
   gap: 10,
 };
 
@@ -8573,10 +8582,10 @@ const difficultyRowStyle = {
 const sentenceStyle = {
   border: "1px solid rgba(125, 163, 201, 0.45)",
   background: "rgba(3, 13, 25, 0.72)",
-  padding: 12,
-  minHeight: 76,
+  padding: 10,
+  minHeight: 64,
   marginBottom: 4,
-  fontSize: 24,
+  fontSize: "clamp(18px, 4vw, 24px)",
   display: "flex",
   flexWrap: "nowrap",
   gap: 8,
@@ -8617,7 +8626,7 @@ const sentenceChipStyle = {
   color: "#e6f5ff",
   padding: "8px 12px",
   cursor: "pointer",
-  fontSize: 18,
+  fontSize: "clamp(14px, 3.2vw, 18px)",
   whiteSpace: "nowrap",
   transition: "transform 120ms ease, border-color 120ms ease",
 };
@@ -8632,13 +8641,15 @@ const sentenceChipHighlightStyle = {
 const sentenceHeaderStyle = {
   display: "flex",
   justifyContent: "space-between",
-  alignItems: "center",
+  alignItems: "flex-start",
+  flexWrap: "wrap",
   gap: 10,
   marginBottom: 8,
 };
 
 const sentenceMetaStyle = {
   display: "flex",
+  flexWrap: "wrap",
   alignItems: "center",
   gap: 8,
 };
@@ -8721,7 +8732,7 @@ const anticipationChipStyle = {
 
 const suggestionRowStyle = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))",
+  gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))",
   gap: 8,
   marginTop: 8,
 };
@@ -8979,7 +8990,7 @@ const whyDetailValueStyle = {
 
 const phraseRowStyle = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
   gap: 8,
   marginTop: 8,
 };
@@ -9057,7 +9068,7 @@ const actionRowStyle = {
 
 const childSentenceActionRowStyle = {
   display: "grid",
-  gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+  gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))",
   gap: 8,
   marginTop: 10,
 };
@@ -9090,7 +9101,7 @@ const childPrimarySpeakBtnStyle = {
 
 const gridStyle = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(145px, 1fr))",
+  gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
   gap: 10,
   marginTop: 8,
 };
@@ -9118,7 +9129,7 @@ const alternateWordPanelStyle = {
 
 const childGridStyle = {
   ...gridStyle,
-  gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+  gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
   gap: 8,
 };
 
@@ -9133,8 +9144,8 @@ const childWordCardStyle = {
 };
 
 const btnStyle = {
-  padding: "10px 12px",
-  fontSize: 15,
+  padding: "9px 11px",
+  fontSize: 14,
   borderRadius: 12,
   border: "1px solid rgba(143, 182, 222, 0.55)",
   background: "linear-gradient(145deg, rgba(23,58,91,0.86), rgba(17,44,73,0.86))",
@@ -9149,28 +9160,28 @@ const activeBtnStyle = {
 };
 
 const gridBtn = {
-  padding: 18,
-  fontSize: 18,
+  padding: 12,
+  fontSize: "clamp(14px, 2.6vw, 18px)",
   borderRadius: 16,
   background: "linear-gradient(145deg, rgba(29, 67, 104, 0.86), rgba(19, 46, 77, 0.86))",
   border: "1px solid rgba(135, 175, 218, 0.52)",
   color: "#f2fbff",
   cursor: "pointer",
-  minHeight: 112,
+  minHeight: 96,
 };
 
 const childWordTileStyle = {
-  minHeight: 118,
+  minHeight: 104,
   borderRadius: 14,
-  padding: 10,
-  fontSize: 17,
+  padding: 8,
+  fontSize: "clamp(13px, 2.7vw, 17px)",
   gap: 6,
 };
 
 const largeWordTileStyle = {
-  minHeight: 160,
-  fontSize: 22,
-  padding: 24,
+  minHeight: 132,
+  fontSize: "clamp(16px, 4vw, 22px)",
+  padding: 16,
 };
 
 const scanHighlightTileStyle = {
@@ -9224,7 +9235,8 @@ const childFavoriteCornerBtnStyle = {
 const childPhraseHeaderStyle = {
   display: "flex",
   justifyContent: "space-between",
-  alignItems: "center",
+  alignItems: "flex-start",
+  flexWrap: "wrap",
   gap: 8,
 };
 
@@ -9269,16 +9281,17 @@ const storyItemStyle = {
 
 const floatingEmergencyBtnStyle = {
   position: "fixed",
-  right: 18,
-  bottom: 18,
+  right: 12,
+  bottom: 12,
   zIndex: 12,
   border: "1px solid rgba(255, 143, 143, 0.82)",
   background: "linear-gradient(145deg, rgba(171, 26, 42, 0.95), rgba(131, 20, 35, 0.95))",
   color: "#fff2f2",
-  padding: "12px 16px",
+  padding: "10px 14px",
   borderRadius: 999,
   cursor: "pointer",
-  fontSize: 14,
+  fontSize: 13,
+  maxWidth: "calc(100vw - 24px)",
   fontWeight: 700,
   letterSpacing: 0.3,
   boxShadow: "0 14px 28px rgba(69, 8, 19, 0.45)",
@@ -9312,6 +9325,7 @@ const dashboardHeroStyle = {
   display: "flex",
   justifyContent: "space-between",
   alignItems: "flex-start",
+  flexWrap: "wrap",
   gap: 16,
   marginBottom: 14,
 };
@@ -9327,7 +9341,7 @@ const dashboardEyebrowStyle = {
 
 const dashboardHeadingStyle = {
   margin: "4px 0 4px",
-  fontSize: 30,
+  fontSize: "clamp(1.45rem, 4vw, 1.9rem)",
   lineHeight: 1.1,
   color: "#f2f9ff",
 };
@@ -9338,7 +9352,8 @@ const dashboardSubtitleStyle = {
 };
 
 const dashboardGoalBadgeStyle = {
-  minWidth: 220,
+  minWidth: 0,
+  width: "min(100%, 280px)",
   borderRadius: 14,
   padding: 12,
   border: "1px solid rgba(130, 173, 217, 0.55)",
@@ -9358,7 +9373,7 @@ const dashboardGoalValueStyle = {
   display: "block",
   marginTop: 4,
   marginBottom: 8,
-  fontSize: 24,
+  fontSize: "clamp(1.1rem, 3.4vw, 1.5rem)",
   color: "#e7f9ff",
 };
 
@@ -9400,13 +9415,13 @@ const dashboardStatLabelStyle = {
 
 const dashboardStatValueStyle = {
   color: "#e7f7ff",
-  fontSize: 22,
+  fontSize: "clamp(1rem, 3.2vw, 1.4rem)",
   lineHeight: 1,
 };
 
 const dashboardPanelsStyle = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
   gap: 12,
 };
 
@@ -9520,8 +9535,8 @@ const dashboardAutoSentenceHintStyle = {
 
 const dashboardAutoTrendChartStyle = {
   display: "grid",
-  gridTemplateColumns: "repeat(14, minmax(18px, 1fr))",
-  gap: 6,
+  gridTemplateColumns: "repeat(14, minmax(12px, 1fr))",
+  gap: 4,
   alignItems: "end",
 };
 
@@ -9539,7 +9554,7 @@ const dashboardAutoTrendShownStyle = {
 
 const dashboardAutoTrendTrackStyle = {
   width: "100%",
-  height: 86,
+  height: 72,
   borderRadius: 8,
   background: "rgba(134, 169, 205, 0.24)",
   padding: "4px 3px",
@@ -9629,8 +9644,8 @@ const dashboardPhraseLabelStyle = {
 
 const dashboardTrendChartStyle = {
   display: "grid",
-  gridTemplateColumns: "repeat(14, minmax(18px, 1fr))",
-  gap: 6,
+  gridTemplateColumns: "repeat(14, minmax(12px, 1fr))",
+  gap: 4,
   alignItems: "end",
 };
 
@@ -9648,7 +9663,7 @@ const dashboardTrendCountStyle = {
 
 const dashboardTrendTrackStyle = {
   width: "100%",
-  height: 80,
+  height: 68,
   borderRadius: 8,
   background: "rgba(139, 177, 215, 0.24)",
   display: "flex",
