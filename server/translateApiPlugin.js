@@ -171,7 +171,7 @@ async function translateWithAzure({
   }
 }
 
-export function translateApiPlugin(env = {}) {
+export function createTranslateMiddleware(env = {}) {
   const requestedProvider = String(env.TRANSLATE_PROVIDER ?? "").trim().toLowerCase();
   const googleApiKey = String(env.GOOGLE_TRANSLATE_API_KEY ?? "").trim();
   const azureApiKey = String(env.AZURE_TRANSLATOR_API_KEY ?? "").trim();
@@ -190,9 +190,12 @@ export function translateApiPlugin(env = {}) {
   const maxTextChars = toInt(env.TRANSLATE_MAX_TEXT_CHARS, DEFAULT_MAX_TEXT_CHARS);
   const limiter = createRateLimiter({ maxRequests, windowMs });
 
-  const middleware = async (req, res, next) => {
+  return async (req, res, next) => {
     if (!req.url?.startsWith("/api/translate")) {
-      return next();
+      if (typeof next === "function") {
+        return next();
+      }
+      return json(res, 404, { error: "Translate endpoint not found" });
     }
 
     if (req.method !== "GET" && req.method !== "POST") {
@@ -304,7 +307,10 @@ export function translateApiPlugin(env = {}) {
       });
     }
   };
+}
 
+export function translateApiPlugin(env = {}) {
+  const middleware = createTranslateMiddleware(env);
   return {
     name: "aac-translate-api",
     configureServer(server) {
