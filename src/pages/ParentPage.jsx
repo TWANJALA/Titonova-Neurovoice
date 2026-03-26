@@ -8746,31 +8746,31 @@ const anticipationChipStyle = {
 
 const suggestionRowStyle = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))",
-  gap: 8,
+  gridTemplateColumns: "repeat(auto-fit, minmax(96px, 1fr))",
+  gap: 6,
   marginTop: 8,
 };
 
 const suggestionBtnStyle = {
   display: "grid",
-  gap: 6,
+  gap: 4,
   alignItems: "center",
   justifyItems: "center",
   textAlign: "center",
-  padding: 14,
-  fontSize: 16,
-  borderRadius: 14,
+  padding: 10,
+  fontSize: 14,
+  borderRadius: 12,
   border: "1px solid rgba(141, 183, 226, 0.5)",
   background: "linear-gradient(150deg, rgba(20, 50, 80, 0.86), rgba(15, 36, 63, 0.76))",
   color: "#ecf7ff",
   cursor: "pointer",
-  minHeight: 88,
+  minHeight: 72,
 };
 
 const largeSuggestionBtnStyle = {
-  minHeight: 122,
-  fontSize: 20,
-  padding: 18,
+  minHeight: 100,
+  fontSize: 18,
+  padding: 14,
 };
 
 const childSuggestionsCardStyle = {
@@ -8932,20 +8932,20 @@ const smartSuggestionCardStyle = {
   border: "1px solid rgba(136, 176, 216, 0.34)",
   borderRadius: 14,
   background: "rgba(10, 26, 45, 0.74)",
-  padding: 8,
+  padding: 6,
   display: "grid",
-  gap: 8,
+  gap: 6,
 };
 
 const smartSuggestionMainBtnStyle = {
   ...suggestionBtnStyle,
   width: "100%",
-  minHeight: 96,
+  minHeight: 78,
 };
 
 const smartSuggestionPrimaryTextStyle = {
-  fontSize: 16,
-  lineHeight: 1.35,
+  fontSize: 14,
+  lineHeight: 1.28,
   textAlign: "center",
   color: "#e8f6ff",
 };
@@ -9115,8 +9115,8 @@ const childPrimarySpeakBtnStyle = {
 
 const gridStyle = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
-  gap: 10,
+  gridTemplateColumns: "repeat(auto-fit, minmax(108px, 1fr))",
+  gap: 8,
   marginTop: 8,
 };
 
@@ -9143,8 +9143,8 @@ const alternateWordPanelStyle = {
 
 const childGridStyle = {
   ...gridStyle,
-  gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
-  gap: 8,
+  gridTemplateColumns: "repeat(auto-fit, minmax(108px, 1fr))",
+  gap: 7,
 };
 
 const wordCardStyle = {
@@ -9174,28 +9174,28 @@ const activeBtnStyle = {
 };
 
 const gridBtn = {
-  padding: 12,
-  fontSize: "clamp(14px, 2.6vw, 18px)",
-  borderRadius: 16,
+  padding: 9,
+  fontSize: "clamp(13px, 2.2vw, 16px)",
+  borderRadius: 14,
   background: "linear-gradient(145deg, rgba(29, 67, 104, 0.86), rgba(19, 46, 77, 0.86))",
   border: "1px solid rgba(135, 175, 218, 0.52)",
   color: "#f2fbff",
   cursor: "pointer",
-  minHeight: 96,
+  minHeight: 82,
 };
 
 const childWordTileStyle = {
-  minHeight: 104,
-  borderRadius: 14,
-  padding: 8,
-  fontSize: "clamp(13px, 2.7vw, 17px)",
-  gap: 6,
+  minHeight: 88,
+  borderRadius: 12,
+  padding: 6,
+  fontSize: "clamp(12px, 2.2vw, 15px)",
+  gap: 4,
 };
 
 const largeWordTileStyle = {
-  minHeight: 132,
-  fontSize: "clamp(16px, 4vw, 22px)",
-  padding: 16,
+  minHeight: 112,
+  fontSize: "clamp(14px, 3.2vw, 19px)",
+  padding: 12,
 };
 
 const scanHighlightTileStyle = {
