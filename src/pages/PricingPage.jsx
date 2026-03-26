@@ -405,8 +405,8 @@ const pageStyle = {
   minHeight: "100vh",
   padding: "18px min(3vw, 28px) 26px",
   background:
-    "radial-gradient(900px 400px at 5% -5%, #c8ecff 0%, transparent 60%), radial-gradient(700px 380px at 100% 0%, #d8ffe5 0%, transparent 65%), linear-gradient(170deg, #f4f9ff, #eef6ff)",
-  color: "#10263a",
+    "radial-gradient(980px 440px at 5% -8%, rgba(66, 145, 255, 0.3) 0%, transparent 62%), radial-gradient(760px 400px at 100% 0%, rgba(52, 214, 175, 0.2) 0%, transparent 66%), linear-gradient(165deg, #020817 0%, #06152d 44%, #0d2446 100%)",
+  color: "#e8f4ff",
 };
 
 const heroStyle = {
@@ -414,9 +414,9 @@ const heroStyle = {
   margin: "0 auto 12px",
   padding: 18,
   borderRadius: 18,
-  border: "1px solid #bfd9ef",
-  background: "linear-gradient(180deg, #ffffff, #f5fbff)",
-  boxShadow: "0 12px 26px rgba(16, 38, 58, 0.08)",
+  border: "1px solid rgba(141, 186, 236, 0.42)",
+  background: "linear-gradient(165deg, rgba(8, 24, 47, 0.88), rgba(8, 21, 41, 0.92))",
+  boxShadow: "0 16px 34px rgba(2, 9, 20, 0.44)",
 };
 
 const eyebrowStyle = {
@@ -424,7 +424,7 @@ const eyebrowStyle = {
   textTransform: "uppercase",
   letterSpacing: "0.12em",
   fontSize: 12,
-  color: "#24619a",
+  color: "#9ec5e9",
   fontWeight: 700,
 };
 
@@ -437,7 +437,7 @@ const titleStyle = {
 
 const subtitleStyle = {
   margin: 0,
-  color: "#48637c",
+  color: "#9cbcdf",
   fontSize: 14,
   lineHeight: 1.45,
   maxWidth: 76 * 8,
@@ -459,10 +459,10 @@ const intervalToggleStyle = {
 };
 
 const toggleButtonStyle = {
-  border: "1px solid #94b5d4",
+  border: "1px solid rgba(141, 188, 238, 0.58)",
   borderRadius: 999,
-  background: "#f8fbff",
-  color: "#2e4b67",
+  background: "rgba(10, 30, 53, 0.78)",
+  color: "#d7ecff",
   padding: "6px 10px",
   fontWeight: 700,
   fontSize: 13,
@@ -471,26 +471,26 @@ const toggleButtonStyle = {
 
 const toggleActiveStyle = {
   ...toggleButtonStyle,
-  border: "1px solid #2f78c8",
-  background: "#eaf4ff",
-  color: "#1a4f86",
+  border: "1px solid rgba(109, 188, 251, 0.82)",
+  background: "linear-gradient(145deg, rgba(23, 93, 149, 0.88), rgba(17, 74, 125, 0.9))",
+  color: "#ecf7ff",
 };
 
 const annualBadgeStyle = {
   borderRadius: 999,
-  border: "1px solid #2f9f6f",
-  background: "#ebf9f1",
-  color: "#146640",
+  border: "1px solid rgba(112, 238, 194, 0.72)",
+  background: "rgba(19, 86, 63, 0.52)",
+  color: "#d8ffec",
   padding: "4px 8px",
   fontSize: 11,
   fontWeight: 700,
 };
 
 const solidButtonStyle = {
-  border: "1px solid #1f8a5e",
+  border: "1px solid rgba(112, 238, 194, 0.72)",
   borderRadius: 10,
-  background: "#27a86f",
-  color: "#fff",
+  background: "linear-gradient(145deg, rgba(20, 112, 80, 0.94), rgba(17, 89, 65, 0.92))",
+  color: "#effff7",
   padding: "8px 12px",
   fontWeight: 700,
   fontSize: 13,
@@ -500,10 +500,10 @@ const solidButtonStyle = {
 const ghostButtonStyle = {
   display: "inline-flex",
   alignItems: "center",
-  border: "1px solid #9bb7cf",
+  border: "1px solid rgba(141, 188, 238, 0.62)",
   borderRadius: 10,
-  background: "#fff",
-  color: "#153754",
+  background: "rgba(10, 30, 53, 0.78)",
+  color: "#dceeff",
   padding: "8px 12px",
   textDecoration: "none",
   fontWeight: 700,
@@ -513,28 +513,28 @@ const ghostButtonStyle = {
 const metaStyle = {
   marginTop: 8,
   marginBottom: 0,
-  color: "#33516c",
+  color: "#9cbcdf",
   fontSize: 14,
 };
 
 const warningStyle = {
   marginTop: 8,
   marginBottom: 0,
-  color: "#8b5500",
+  color: "#ffe5a3",
   fontWeight: 600,
 };
 
 const errorStyle = {
   marginTop: 8,
   marginBottom: 0,
-  color: "#9d1e1e",
+  color: "#ffc7cf",
   fontWeight: 600,
 };
 
 const successStyle = {
   marginTop: 8,
   marginBottom: 0,
-  color: "#0f7a42",
+  color: "#9ff4c8",
   fontWeight: 700,
 };
 
@@ -551,8 +551,8 @@ const commerceStripStyle = {
   margin: "0 auto",
   padding: "8px 10px",
   borderRadius: 12,
-  border: "1px solid #c8dcf0",
-  background: "linear-gradient(180deg, #f8fbff, #f1f8ff)",
+  border: "1px solid rgba(136, 181, 228, 0.36)",
+  background: "linear-gradient(165deg, rgba(10, 28, 51, 0.84), rgba(9, 24, 45, 0.88))",
   display: "grid",
   gap: 4,
   gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
@@ -560,17 +560,17 @@ const commerceStripStyle = {
 
 const commerceStripTextStyle = {
   margin: 0,
-  color: "#33516c",
+  color: "#b4d0ec",
   fontWeight: 600,
   fontSize: 12,
 };
 
 const planCardStyle = (isCurrentPlan, isRecommended) => ({
-  border: `1px solid ${isCurrentPlan ? "#2f9f6f" : isRecommended ? "#2f78c8" : "#bfd4e8"}`,
+  border: `1px solid ${isCurrentPlan ? "rgba(112, 238, 194, 0.72)" : isRecommended ? "rgba(109, 188, 251, 0.82)" : "rgba(136, 181, 228, 0.36)"}`,
   borderRadius: 16,
   padding: 12,
-  background: "linear-gradient(180deg, #ffffff, #f6fbff)",
-  boxShadow: isRecommended ? "0 12px 22px rgba(47, 120, 200, 0.14)" : "0 8px 16px rgba(16, 38, 58, 0.06)",
+  background: "linear-gradient(165deg, rgba(8, 24, 47, 0.88), rgba(8, 21, 41, 0.92))",
+  boxShadow: isRecommended ? "0 16px 28px rgba(36, 111, 185, 0.22)" : "0 12px 22px rgba(2, 9, 20, 0.34)",
 });
 
 const planHeaderStyle = {
@@ -599,7 +599,7 @@ const planSubtitleStyle = {
   marginTop: 4,
   marginBottom: 6,
   fontWeight: 600,
-  color: "#49637d",
+  color: "#a5c4e4",
   fontSize: 14,
 };
 
@@ -608,13 +608,13 @@ const priceStyle = {
   marginBottom: 6,
   fontSize: "1.4rem",
   fontWeight: 800,
-  color: "#143351",
+  color: "#e8f5ff",
 };
 
 const savingsStyle = {
   marginTop: -2,
   marginBottom: 8,
-  color: "#1c7a4f",
+  color: "#9ff4c8",
   fontWeight: 700,
   fontSize: 12,
 };
@@ -622,7 +622,7 @@ const savingsStyle = {
 const planDescriptionStyle = {
   marginTop: 0,
   marginBottom: 8,
-  color: "#4a647d",
+  color: "#a5c4e4",
   fontSize: 14,
   lineHeight: 1.35,
 };
@@ -631,17 +631,17 @@ const featureListStyle = {
   marginTop: 0,
   marginBottom: 10,
   paddingLeft: 18,
-  color: "#1d3f60",
+  color: "#cfe4fa",
   lineHeight: 1.3,
   fontSize: 14,
 };
 
 const checkoutButtonStyle = {
   width: "100%",
-  border: "1px solid #1f8a5e",
+  border: "1px solid rgba(112, 238, 194, 0.72)",
   borderRadius: 10,
-  background: "#27a86f",
-  color: "#fff",
+  background: "linear-gradient(145deg, rgba(20, 112, 80, 0.94), rgba(17, 89, 65, 0.92))",
+  color: "#effff7",
   padding: "8px 10px",
   fontWeight: 700,
   fontSize: 13,
@@ -650,10 +650,10 @@ const checkoutButtonStyle = {
 
 const currentPlanButtonStyle = {
   width: "100%",
-  border: "1px solid #9bbad4",
+  border: "1px solid rgba(138, 176, 220, 0.55)",
   borderRadius: 10,
-  background: "#eff5fb",
-  color: "#4b6881",
+  background: "rgba(14, 34, 59, 0.68)",
+  color: "#b6d1ed",
   padding: "8px 10px",
   fontWeight: 700,
   fontSize: 13,
@@ -663,7 +663,7 @@ const currentPlanButtonStyle = {
 const annualFallbackStyle = {
   marginTop: 8,
   marginBottom: 0,
-  color: "#6e4e00",
+  color: "#ffe5a3",
   fontSize: 12,
   fontWeight: 600,
 };

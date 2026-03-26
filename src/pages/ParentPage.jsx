@@ -8257,7 +8257,7 @@ function Dashboard({
 const workspaceRootStyle = {
   minHeight: "100vh",
   background:
-    "radial-gradient(1300px 620px at -10% -10%, rgba(25, 84, 151, 0.28), transparent 55%), radial-gradient(900px 520px at 95% 0%, rgba(0, 149, 117, 0.14), transparent 60%), linear-gradient(160deg, #050d1c 0%, #071326 46%, #050f1f 100%)",
+    "radial-gradient(1300px 620px at -10% -10%, rgba(66, 145, 255, 0.32), transparent 55%), radial-gradient(900px 520px at 95% 0%, rgba(52, 214, 175, 0.18), transparent 60%), linear-gradient(165deg, #020817 0%, #06152d 45%, #0d2446 100%)",
   color: "#e9f4ff",
   position: "relative",
   overflowX: "hidden",
@@ -8303,9 +8303,10 @@ const headerStyle = {
   marginBottom: 5,
   padding: "clamp(4px, 0.8vw, 6px)",
   borderRadius: 10,
-  background: "linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04))",
-  border: "1px solid rgba(154, 190, 228, 0.26)",
-  backdropFilter: "blur(6px)",
+  background: "linear-gradient(155deg, rgba(9, 27, 52, 0.88), rgba(8, 22, 43, 0.84))",
+  border: "1px solid rgba(141, 186, 236, 0.42)",
+  backdropFilter: "blur(8px)",
+  boxShadow: "0 12px 28px rgba(2, 9, 20, 0.4)",
 };
 
 const syncStatusStyle = {
@@ -8327,10 +8328,10 @@ const linkPillStyle = {
   justifyContent: "center",
   color: "#d8edff",
   textDecoration: "none",
-  border: "1px solid rgba(137, 176, 222, 0.65)",
+  border: "1px solid rgba(141, 188, 238, 0.62)",
   padding: "7px 10px",
   borderRadius: 10,
-  background: "rgba(15, 32, 53, 0.58)",
+  background: "rgba(10, 30, 53, 0.78)",
 };
 
 const warningStyle = {
@@ -8362,11 +8363,12 @@ const warningDismissBtnStyle = {
 };
 
 const childSwitcherStyle = {
-  border: "1px solid rgba(132, 169, 208, 0.3)",
-  background: "rgba(12, 28, 47, 0.66)",
+  border: "1px solid rgba(136, 181, 228, 0.36)",
+  background: "linear-gradient(165deg, rgba(10, 28, 51, 0.84), rgba(9, 24, 45, 0.88))",
   borderRadius: 8,
   padding: 4,
   marginBottom: 4,
+  boxShadow: "0 10px 20px rgba(2, 9, 20, 0.32)",
 };
 
 const childControlsStyle = {
@@ -8414,11 +8416,12 @@ const topCardSelectStyle = {
 };
 
 const panelCardStyle = {
-  border: "1px solid rgba(139, 175, 215, 0.34)",
-  background: "rgba(6, 18, 33, 0.84)",
+  border: "1px solid rgba(136, 182, 230, 0.35)",
+  background: "linear-gradient(165deg, rgba(8, 22, 43, 0.86), rgba(7, 19, 37, 0.9))",
   borderRadius: 10,
   padding: "clamp(6px, 1vw, 8px)",
   marginBottom: 6,
+  boxShadow: "0 12px 24px rgba(2, 9, 20, 0.34)",
 };
 
 const panelTitleStyle = {
@@ -9199,8 +9202,8 @@ const btnStyle = {
   padding: "6px 8px",
   fontSize: 12,
   borderRadius: 8,
-  border: "1px solid rgba(143, 182, 222, 0.55)",
-  background: "linear-gradient(145deg, rgba(23,58,91,0.86), rgba(17,44,73,0.86))",
+  border: "1px solid rgba(143, 190, 240, 0.58)",
+  background: "linear-gradient(150deg, rgba(16, 46, 77, 0.9), rgba(13, 37, 63, 0.9))",
   color: "#e9f6ff",
   cursor: "pointer",
 };
