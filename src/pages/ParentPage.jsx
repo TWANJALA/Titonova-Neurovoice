@@ -8288,7 +8288,7 @@ const workspaceGlowTwoStyle = {
 const workspaceShellStyle = {
   width: "min(1220px, calc(100vw - 14px))",
   margin: "0 auto",
-  padding: "clamp(12px, 2.4vw, 20px) 0 clamp(24px, 4vw, 40px)",
+  padding: "clamp(8px, 1.8vw, 14px) 0 clamp(14px, 2.8vw, 24px)",
   position: "relative",
   zIndex: 2,
   fontFamily: "\"Space Grotesk\", \"Avenir Next\", \"Segoe UI\", sans-serif",
@@ -8299,9 +8299,9 @@ const headerStyle = {
   justifyContent: "space-between",
   alignItems: "flex-start",
   flexWrap: "wrap",
-  gap: 16,
-  marginBottom: 16,
-  padding: "clamp(12px, 2vw, 16px)",
+  gap: 10,
+  marginBottom: 10,
+  padding: "clamp(9px, 1.5vw, 12px)",
   borderRadius: 16,
   background: "linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04))",
   border: "1px solid rgba(154, 190, 228, 0.26)",
@@ -8328,8 +8328,8 @@ const linkPillStyle = {
   color: "#d8edff",
   textDecoration: "none",
   border: "1px solid rgba(137, 176, 222, 0.65)",
-  padding: "9px 12px",
-  borderRadius: 12,
+  padding: "7px 10px",
+  borderRadius: 10,
   background: "rgba(15, 32, 53, 0.58)",
 };
 
@@ -8365,29 +8365,30 @@ const childSwitcherStyle = {
   border: "1px solid rgba(132, 169, 208, 0.3)",
   background: "rgba(12, 28, 47, 0.66)",
   borderRadius: 14,
-  padding: 12,
-  marginBottom: 12,
+  padding: 9,
+  marginBottom: 9,
 };
 
 const childControlsStyle = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
-  gap: 8,
-  marginTop: 8,
+  gridTemplateColumns: "repeat(auto-fit, minmax(128px, 1fr))",
+  gap: 6,
+  marginTop: 6,
 };
 
 const panelCardStyle = {
   border: "1px solid rgba(139, 175, 215, 0.34)",
   background: "rgba(6, 18, 33, 0.84)",
-  borderRadius: 14,
-  padding: "clamp(10px, 1.7vw, 12px)",
-  marginBottom: 12,
+  borderRadius: 12,
+  padding: "clamp(8px, 1.3vw, 10px)",
+  marginBottom: 8,
 };
 
 const panelTitleStyle = {
   display: "block",
   letterSpacing: 0.3,
-  marginBottom: 8,
+  marginBottom: 6,
+  fontSize: 14,
   color: "#d9eeff",
 };
 
@@ -8408,7 +8409,7 @@ const modeToggleRowStyle = {
 
 const modeHelpTextStyle = {
   margin: "4px 0 0",
-  fontSize: 12,
+  fontSize: 11,
   color: "#a5c4df",
 };
 
@@ -8450,15 +8451,15 @@ const finderSectionStyle = {
 
 const finderControlsStyle = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
-  gap: 8,
-  marginTop: 8,
+  gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))",
+  gap: 6,
+  marginTop: 6,
 };
 
 const textInputStyle = {
   width: "100%",
-  padding: 11,
-  borderRadius: 12,
+  padding: 9,
+  borderRadius: 10,
   border: "1px solid rgba(135, 172, 212, 0.5)",
   background: "rgba(7, 21, 37, 0.85)",
   color: "#e8f4ff",
@@ -8466,8 +8467,8 @@ const textInputStyle = {
 
 const selectStyle = {
   width: "100%",
-  padding: 11,
-  borderRadius: 12,
+  padding: 9,
+  borderRadius: 10,
   border: "1px solid rgba(135, 172, 212, 0.5)",
   background: "rgba(7, 21, 37, 0.9)",
   color: "#e8f4ff",
@@ -8476,7 +8477,7 @@ const selectStyle = {
 const boardTabRowStyle = {
   display: "flex",
   flexWrap: "wrap",
-  gap: 8,
+  gap: 6,
 };
 
 const childCategoryTabRowStyle = {
@@ -8501,17 +8502,17 @@ const boardTabBtnStyle = (active) => ({
     : "rgba(13, 33, 55, 0.72)",
   color: active ? "#dcfff2" : "#d4e9fb",
   borderRadius: 999,
-  padding: "8px 12px",
+  padding: "6px 10px",
   cursor: "pointer",
-  fontSize: 13,
+  fontSize: 12,
   letterSpacing: 0.2,
 });
 
 const boardSubTabRowStyle = {
   display: "flex",
   flexWrap: "wrap",
-  gap: 8,
-  marginTop: 10,
+  gap: 6,
+  marginTop: 8,
 };
 
 const boardSubTabBtnStyle = (active) => ({
@@ -8521,15 +8522,15 @@ const boardSubTabBtnStyle = (active) => ({
     : "rgba(9, 26, 45, 0.72)",
   color: active ? "#e4f0ff" : "#c7ddf2",
   borderRadius: 999,
-  padding: "7px 11px",
+  padding: "5px 9px",
   cursor: "pointer",
-  fontSize: 12,
+  fontSize: 11,
 });
 
 const boardNavigationHintStyle = {
-  margin: "10px 0 0",
+  margin: "8px 0 0",
   color: "#a8c5e2",
-  fontSize: 13,
+  fontSize: 12,
 };
 
 const onboardingBodyStyle = {
@@ -8596,14 +8597,14 @@ const difficultyRowStyle = {
 const sentenceStyle = {
   border: "1px solid rgba(125, 163, 201, 0.45)",
   background: "rgba(3, 13, 25, 0.72)",
-  padding: 10,
-  minHeight: 64,
+  padding: 8,
+  minHeight: 56,
   marginBottom: 4,
-  fontSize: "clamp(18px, 4vw, 24px)",
+  fontSize: "clamp(16px, 3.2vw, 20px)",
   display: "flex",
   flexWrap: "nowrap",
-  gap: 8,
-  borderRadius: 12,
+  gap: 6,
+  borderRadius: 10,
   overflowX: "auto",
   alignItems: "center",
 };
@@ -8635,12 +8636,12 @@ const ghostSentenceStyle = {
 
 const sentenceChipStyle = {
   border: "1px solid rgba(123, 176, 223, 0.65)",
-  borderRadius: 14,
+  borderRadius: 12,
   background: "linear-gradient(145deg, rgba(27,61,95,0.8), rgba(22,50,80,0.72))",
   color: "#e6f5ff",
-  padding: "8px 12px",
+  padding: "6px 10px",
   cursor: "pointer",
-  fontSize: "clamp(14px, 3.2vw, 18px)",
+  fontSize: "clamp(13px, 2.6vw, 16px)",
   whiteSpace: "nowrap",
   transition: "transform 120ms ease, border-color 120ms ease",
 };
@@ -8724,8 +8725,8 @@ const compactSuggestionBtnStyle = {
   background: "rgba(14, 36, 60, 0.72)",
   color: "#e8f5ff",
   borderRadius: 999,
-  padding: "8px 12px",
-  fontSize: 14,
+  padding: "6px 10px",
+  fontSize: 13,
   cursor: "pointer",
 };
 
@@ -8733,8 +8734,8 @@ const anticipationRowStyle = {
   border: "1px solid rgba(126, 187, 237, 0.36)",
   borderRadius: 12,
   background: "rgba(11, 33, 55, 0.72)",
-  padding: 10,
-  marginBottom: 8,
+  padding: 8,
+  marginBottom: 6,
 };
 
 const anticipationChipStyle = {
@@ -8775,17 +8776,17 @@ const largeSuggestionBtnStyle = {
 
 const childSuggestionsCardStyle = {
   ...panelCardStyle,
-  paddingTop: 10,
+  paddingTop: 8,
 };
 
 const autoSentenceRowStyle = {
   border: "1px solid rgba(117, 222, 178, 0.46)",
   borderRadius: 12,
   background: "rgba(11, 41, 34, 0.68)",
-  padding: 10,
-  marginBottom: 8,
+  padding: 8,
+  marginBottom: 6,
   display: "grid",
-  gap: 8,
+  gap: 6,
 };
 
 const autoSentenceCardStyle = {
@@ -8806,13 +8807,13 @@ const autoSentenceBtnStyle = (confidenceScore = 0.55, featured = false) => {
     background: "linear-gradient(145deg, rgba(15, 103, 73, 0.9), rgba(10, 81, 59, 0.88))",
     color: "#eafff2",
     cursor: "pointer",
-    padding: "10px 12px",
+    padding: "8px 10px",
     textAlign: "left",
     display: "grid",
-    gap: 6,
+    gap: 5,
     boxShadow: glow,
-    minHeight: featured ? 68 : "auto",
-    fontSize: featured ? 17 : 15,
+    minHeight: featured ? 60 : "auto",
+    fontSize: featured ? 15 : 13,
   };
 };
 
@@ -9004,9 +9005,9 @@ const whyDetailValueStyle = {
 
 const phraseRowStyle = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-  gap: 8,
-  marginTop: 8,
+  gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+  gap: 6,
+  marginTop: 6,
 };
 
 const phraseCardStyle = {
@@ -9017,8 +9018,8 @@ const phraseCardStyle = {
 
 const phraseBtnStyle = {
   textAlign: "left",
-  padding: "10px 12px",
-  borderRadius: 12,
+  padding: "8px 10px",
+  borderRadius: 10,
   border: "1px solid rgba(131, 172, 214, 0.42)",
   background: "rgba(15, 38, 63, 0.75)",
   color: "#e2f3ff",
@@ -9082,9 +9083,9 @@ const actionRowStyle = {
 
 const childSentenceActionRowStyle = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))",
-  gap: 8,
-  marginTop: 10,
+  gridTemplateColumns: "repeat(auto-fit, minmax(100px, 1fr))",
+  gap: 6,
+  marginTop: 8,
 };
 
 const gestureHintStyle = {
@@ -9097,12 +9098,12 @@ const childSentenceActionBtnStyle = {
   border: "1px solid rgba(143, 182, 222, 0.55)",
   background: "linear-gradient(145deg, rgba(23,58,91,0.86), rgba(17,44,73,0.86))",
   color: "#e9f6ff",
-  borderRadius: 12,
+  borderRadius: 10,
   cursor: "pointer",
-  fontSize: 16,
-  padding: "12px 10px",
+  fontSize: 14,
+  padding: "10px 8px",
   textAlign: "center",
-  minHeight: 46,
+  minHeight: 40,
 };
 
 const childPrimarySpeakBtnStyle = {
@@ -9115,17 +9116,17 @@ const childPrimarySpeakBtnStyle = {
 
 const gridStyle = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(108px, 1fr))",
-  gap: 8,
-  marginTop: 8,
+  gridTemplateColumns: "repeat(auto-fit, minmax(94px, 1fr))",
+  gap: 6,
+  marginTop: 6,
 };
 
 const wordGridControlRowStyle = {
   display: "flex",
-  gap: 8,
+  gap: 6,
   flexWrap: "wrap",
   alignItems: "center",
-  marginBottom: 8,
+  marginBottom: 6,
 };
 
 const wordGridMetaTextStyle = {
@@ -9143,8 +9144,8 @@ const alternateWordPanelStyle = {
 
 const childGridStyle = {
   ...gridStyle,
-  gridTemplateColumns: "repeat(auto-fit, minmax(108px, 1fr))",
-  gap: 7,
+  gridTemplateColumns: "repeat(auto-fit, minmax(94px, 1fr))",
+  gap: 6,
 };
 
 const wordCardStyle = {
@@ -9158,9 +9159,9 @@ const childWordCardStyle = {
 };
 
 const btnStyle = {
-  padding: "9px 11px",
-  fontSize: 14,
-  borderRadius: 12,
+  padding: "7px 9px",
+  fontSize: 13,
+  borderRadius: 10,
   border: "1px solid rgba(143, 182, 222, 0.55)",
   background: "linear-gradient(145deg, rgba(23,58,91,0.86), rgba(17,44,73,0.86))",
   color: "#e9f6ff",
@@ -9174,28 +9175,28 @@ const activeBtnStyle = {
 };
 
 const gridBtn = {
-  padding: 9,
-  fontSize: "clamp(13px, 2.2vw, 16px)",
-  borderRadius: 14,
+  padding: 7,
+  fontSize: "clamp(12px, 1.9vw, 14px)",
+  borderRadius: 12,
   background: "linear-gradient(145deg, rgba(29, 67, 104, 0.86), rgba(19, 46, 77, 0.86))",
   border: "1px solid rgba(135, 175, 218, 0.52)",
   color: "#f2fbff",
   cursor: "pointer",
-  minHeight: 82,
+  minHeight: 72,
 };
 
 const childWordTileStyle = {
-  minHeight: 88,
-  borderRadius: 12,
-  padding: 6,
-  fontSize: "clamp(12px, 2.2vw, 15px)",
-  gap: 4,
+  minHeight: 72,
+  borderRadius: 10,
+  padding: 4,
+  fontSize: "clamp(11px, 1.9vw, 13px)",
+  gap: 3,
 };
 
 const largeWordTileStyle = {
-  minHeight: 112,
-  fontSize: "clamp(14px, 3.2vw, 19px)",
-  padding: 12,
+  minHeight: 94,
+  fontSize: "clamp(12px, 2.7vw, 16px)",
+  padding: 8,
 };
 
 const scanHighlightTileStyle = {
@@ -9232,17 +9233,17 @@ const favoriteToggleBtnStyle = {
 
 const childFavoriteCornerBtnStyle = {
   position: "absolute",
-  top: 8,
-  right: 8,
-  width: 28,
-  height: 28,
+  top: 6,
+  right: 6,
+  width: 24,
+  height: 24,
   borderRadius: 999,
   border: "1px solid rgba(250, 216, 108, 0.66)",
   background: "rgba(94, 76, 19, 0.82)",
   color: "#ffe8a8",
   cursor: "pointer",
-  fontSize: 15,
-  lineHeight: "26px",
+  fontSize: 13,
+  lineHeight: "22px",
   padding: 0,
 };
 

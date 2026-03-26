@@ -429,7 +429,7 @@ export default function LandingPage() {
           <article className="hero-card">
             <p className="eyebrow">Global AAC That Works</p>
             <h1 className="headline">
-              Help every child speak with confidence using a <span className="shine">clinically aligned AAC platform</span> trusted by families and therapists worldwide.
+              For non-verbal people: Help every child speak with confidence using a <span className="shine">clinically aligned AAC platform</span> trusted by families and therapists worldwide.
             </h1>
             <div className="badge-row">
               <span className="badge">No account required</span>
