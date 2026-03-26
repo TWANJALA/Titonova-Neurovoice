@@ -419,9 +419,9 @@ export default function LandingPage() {
 
         <section className="hero" id="main-content">
           <article className="hero-card">
-            <p className="eyebrow">Future-Ready Communication</p>
+            <p className="eyebrow">Global AAC That Works</p>
             <h1 className="headline">
-              A <span className="shine">futuristic AAC platform</span> built for kids, parents, and therapists.
+              Help every child speak with confidence using a <span className="shine">clinically aligned AAC platform</span> trusted by families and therapists worldwide.
             </h1>
             <div className="badge-row">
               <span className="badge">No account required</span>
