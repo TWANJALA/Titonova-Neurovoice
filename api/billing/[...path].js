@@ -1,4 +1,4 @@
-import { createStripeBillingMiddleware } from "../../server/stripeBillingApiPlugin";
+import { createStripeBillingMiddleware } from "../../server/stripeBillingApiPlugin.js";
 
 export const config = {
   api: {

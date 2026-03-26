@@ -3,7 +3,7 @@ import {
   getBillingRecord,
   getUidForStripeCustomerAsync,
   persistBillingRecord,
-} from "./firebaseBillingStore";
+} from "./firebaseBillingStore.js";
 
 const DEFAULT_TIMEOUT_MS = 15000;
 const DEFAULT_AUTH_TIMEOUT_MS = 10000;
