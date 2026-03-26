@@ -3057,14 +3057,28 @@ function getAutoSentences({
     context: {
       recentSentences: history.slice(-30),
       timeOfDay,
+      currentSentence: currentTokens,
+      environment: environmentContext,
+      goal: therapyGoal,
+      urgency:
+        detectedIntent.intent === AUTO_SENTENCE_INTENTS.NEED ||
+        ["help", "hurt", "stop", "emergency"].includes(triggerToken),
     },
     intent: detectedIntent.intent,
     model: {
       phraseFrequency: learningState.acceptedCounts,
+      acceptedCounts: learningState.acceptedCounts,
+      ignoredCounts: learningState.ignoredCounts,
       transitions: wordTransitions,
       wordFrequency: usageCounts,
       timePatterns: {
         [timeOfDay]: [...twinRoutineSet],
+      },
+      environmentPatterns: {
+        [environmentContext]: [
+          ...(SITUATION_CONTEXT_KEYWORDS[contextStack.situation] ?? []),
+          ...twinRoutineSet,
+        ],
       },
     },
     limit,
@@ -3080,7 +3094,7 @@ function getAutoSentences({
       if (productionScore <= 0) return entry;
 
       const nextScore = clamp01(
-        Number(entry.confidenceScore ?? 0) * 0.72 + productionScore * 0.28
+        Number(entry.confidenceScore ?? 0) * 0.62 + productionScore * 0.38
       );
       return {
         ...entry,
