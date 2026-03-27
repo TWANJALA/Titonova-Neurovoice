@@ -1,20 +1,28 @@
 import React from "react";
+import { isModuleLoadFailure, triggerModuleRecoveryReload } from "../lib/runtimeRecovery";
 
 export default class AppErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false, errorMessage: "" };
+    this.state = { hasError: false, errorMessage: "", recovering: false };
   }
 
   static getDerivedStateFromError(error) {
     return {
       hasError: true,
       errorMessage: error?.message ? String(error.message) : "Unknown runtime error",
+      recovering: false,
     };
   }
 
   componentDidCatch(error, errorInfo) {
     console.error("AppErrorBoundary caught an error:", error, errorInfo);
+    if (isModuleLoadFailure(error)) {
+      const reloading = triggerModuleRecoveryReload("boundary");
+      if (reloading) {
+        this.setState({ recovering: true });
+      }
+    }
   }
 
   render() {
@@ -48,6 +56,11 @@ export default class AppErrorBoundary extends React.Component {
           <p style={{ marginTop: 0, marginBottom: 14, fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
             {this.state.errorMessage}
           </p>
+          {this.state.recovering ? (
+            <p style={{ marginTop: 0, marginBottom: 14, color: "#ffd8de" }}>
+              Recovering app files...
+            </p>
+          ) : null}
           <button
             type="button"
             onClick={() => window.location.reload()}
@@ -67,4 +80,3 @@ export default class AppErrorBoundary extends React.Component {
     );
   }
 }
-
