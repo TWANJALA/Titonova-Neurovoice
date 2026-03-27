@@ -562,7 +562,7 @@ export default function LandingPage() {
             <div className="radar-copy">
               <h3 className="radar-title">Live Intelligence</h3>
               <p className="radar-detail">
-                Suggests next words, tracks progress, and learns each child&apos;s voice patterns over time.
+                Supports non-verbal and semi-verbal communication by suggesting next words, tracking progress, and learning each child&apos;s voice patterns over time.
               </p>
             </div>
           </aside>
