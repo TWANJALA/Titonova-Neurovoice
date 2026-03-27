@@ -14,6 +14,7 @@ const TherapistPage = lazy(() => import("./pages/TherapistPage"));
 const AdminPage = lazy(() => import("./pages/AdminPage"));
 const McoDashboard = lazy(() => import("./pages/McoDashboard"));
 const PricingPage = lazy(() => import("./pages/PricingPage"));
+const HelpPage = lazy(() => import("./pages/HelpPage"));
 
 function HomeRoute() {
   const { loading, isAuthenticated, homePath } = useAuth();
@@ -54,6 +55,7 @@ export default function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/pricing" element={<PricingPage />} />
+          <Route path="/help" element={<HelpPage />} />
           <Route path="/unauthorized" element={<UnauthorizedPage />} />
           <Route path="/app" element={<ParentPage />} />
 

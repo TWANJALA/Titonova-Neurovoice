@@ -6607,6 +6607,9 @@ export default function ParentPage() {
               Admin View
             </Link>
           ) : null}
+          <Link to="/help" style={topCardLinkPillStyle}>
+            Help
+          </Link>
           <Link to="/pricing" style={topCardLinkPillStyle}>
             Pricing
           </Link>

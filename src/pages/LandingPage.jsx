@@ -507,6 +507,9 @@ export default function LandingPage() {
         <header className="topbar">
           <div className="brand">Titonova NeuroVoice</div>
           <div className="topbar-actions">
+            <Link to="/help" className="ghost-link">
+              Help
+            </Link>
             <Link to="/pricing" className="ghost-link">
               Pricing
             </Link>
