@@ -3058,7 +3058,7 @@ function getAutoSentences({
       recentSentences: history.slice(-30),
       timeOfDay,
       currentSentence: currentTokens,
-      environment: environmentContext,
+      environment,
       goal: therapyGoal,
       urgency:
         detectedIntent.intent === AUTO_SENTENCE_INTENTS.NEED ||
@@ -3075,7 +3075,7 @@ function getAutoSentences({
         [timeOfDay]: [...twinRoutineSet],
       },
       environmentPatterns: {
-        [environmentContext]: [
+        [environment]: [
           ...(SITUATION_CONTEXT_KEYWORDS[contextStack.situation] ?? []),
           ...twinRoutineSet,
         ],
