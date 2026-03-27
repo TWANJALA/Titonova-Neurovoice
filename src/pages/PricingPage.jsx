@@ -301,7 +301,7 @@ export default function PricingPage() {
             </button>
           ) : null}
           <a
-            href="mailto:sales@titonova.com?subject=Titonova%20NeuroVoice%20Global%20Plan%20Inquiry"
+            href="mailto:tituswanjala89@gmail.com?subject=Titonova%20NeuroVoice%20Global%20Plan%20Inquiry"
             style={resolvedGhostButtonStyle}
           >
             Contact Sales
