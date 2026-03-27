@@ -312,6 +312,10 @@ export default function PricingPage() {
           <a href="tel:+15157790523" style={phoneLinkStyle}>
             515-779-0523
           </a>
+          {" • "}
+          <a href="mailto:tituswanjala89@gmail.com" style={phoneLinkStyle}>
+            tituswanjala89@gmail.com
+          </a>
         </p>
         <div style={resolvedIntervalToggleStyle}>
           <button
