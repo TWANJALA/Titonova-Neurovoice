@@ -232,6 +232,8 @@ export default function PricingPage() {
   const isBusy = (key) => busyKey === key;
   const isAnnual = billingInterval === BILLING_INTERVALS.YEAR;
   const hasActiveSubscription = isActiveSubscriptionStatus(subscriptionStatus);
+  const isMobile = viewport.width > 0 && viewport.width < 700;
+  const isTablet = viewport.width >= 700 && viewport.width < 1024;
   const isLaptopCompact =
     viewport.height >= 700 &&
     viewport.height <= 950 &&
@@ -239,36 +241,208 @@ export default function PricingPage() {
   const useThreeColumnCompactCards = isLaptopCompact && viewport.width >= 1180;
   const annualBadgeText = "Annual billing usually reduces total cost.";
 
-  const resolvedPageStyle = isLaptopCompact ? compactPageStyle : pageStyle;
-  const resolvedHeroStyle = isLaptopCompact ? compactHeroStyle : heroStyle;
-  const resolvedTitleStyle = isLaptopCompact ? compactTitleStyle : titleStyle;
-  const resolvedSubtitleStyle = isLaptopCompact ? compactSubtitleStyle : subtitleStyle;
-  const resolvedHeroActionsStyle = isLaptopCompact ? compactHeroActionsStyle : heroActionsStyle;
-  const resolvedIntervalToggleStyle = isLaptopCompact ? compactIntervalToggleStyle : intervalToggleStyle;
-  const resolvedToggleButtonStyle = isLaptopCompact ? compactToggleButtonStyle : toggleButtonStyle;
-  const resolvedToggleActiveStyle = isLaptopCompact ? compactToggleActiveStyle : toggleActiveStyle;
-  const resolvedAnnualBadgeStyle = isLaptopCompact ? compactAnnualBadgeStyle : annualBadgeStyle;
-  const resolvedMetaStyle = isLaptopCompact ? compactMetaStyle : metaStyle;
-  const resolvedWarningStyle = isLaptopCompact ? compactWarningStyle : warningStyle;
-  const resolvedErrorStyle = isLaptopCompact ? compactErrorStyle : errorStyle;
-  const resolvedSuccessStyle = isLaptopCompact ? compactSuccessStyle : successStyle;
-  const resolvedCommerceStripStyle = isLaptopCompact ? compactCommerceStripStyle : commerceStripStyle;
-  const resolvedCommerceStripTextStyle = isLaptopCompact
-    ? compactCommerceStripTextStyle
-    : commerceStripTextStyle;
-  const resolvedPlanGridStyle = useThreeColumnCompactCards
-    ? compactPlanGridThreeColumnStyle
-    : isLaptopCompact
-      ? compactPlanGridStyle
-      : planGridStyle;
-  const resolvedGhostButtonStyle = isLaptopCompact ? compactGhostButtonStyle : ghostButtonStyle;
-  const resolvedSolidButtonStyle = isLaptopCompact ? compactSolidButtonStyle : solidButtonStyle;
-  const resolvedCurrentPlanButtonStyle = isLaptopCompact
-    ? compactCurrentPlanButtonStyle
-    : currentPlanButtonStyle;
-  const resolvedCheckoutButtonStyle = isLaptopCompact ? compactCheckoutButtonStyle : checkoutButtonStyle;
-  const resolvedAnnualFallbackStyle = isLaptopCompact ? compactAnnualFallbackStyle : annualFallbackStyle;
-  const fitScaleStyle = fitScale < 0.999
+  const resolvedPageStyle = isMobile
+    ? mobilePageStyle
+    : isTablet
+      ? tabletPageStyle
+      : isLaptopCompact
+        ? compactPageStyle
+        : pageStyle;
+  const resolvedHeroStyle = isMobile
+    ? mobileHeroStyle
+    : isTablet
+      ? tabletHeroStyle
+      : isLaptopCompact
+        ? compactHeroStyle
+        : heroStyle;
+  const resolvedTitleStyle = isMobile
+    ? mobileTitleStyle
+    : isTablet
+      ? tabletTitleStyle
+      : isLaptopCompact
+        ? compactTitleStyle
+        : titleStyle;
+  const resolvedSubtitleStyle = isMobile
+    ? mobileSubtitleStyle
+    : isTablet
+      ? tabletSubtitleStyle
+      : isLaptopCompact
+        ? compactSubtitleStyle
+        : subtitleStyle;
+  const resolvedHeroActionsStyle = isMobile
+    ? mobileHeroActionsStyle
+    : isTablet
+      ? tabletHeroActionsStyle
+      : isLaptopCompact
+        ? compactHeroActionsStyle
+        : heroActionsStyle;
+  const resolvedIntervalToggleStyle = isMobile
+    ? mobileIntervalToggleStyle
+    : isTablet
+      ? tabletIntervalToggleStyle
+      : isLaptopCompact
+        ? compactIntervalToggleStyle
+        : intervalToggleStyle;
+  const resolvedToggleButtonStyle = isMobile
+    ? mobileToggleButtonStyle
+    : isTablet
+      ? tabletToggleButtonStyle
+      : isLaptopCompact
+        ? compactToggleButtonStyle
+        : toggleButtonStyle;
+  const resolvedToggleActiveStyle = isMobile
+    ? mobileToggleActiveStyle
+    : isTablet
+      ? tabletToggleActiveStyle
+      : isLaptopCompact
+        ? compactToggleActiveStyle
+        : toggleActiveStyle;
+  const resolvedAnnualBadgeStyle = isMobile
+    ? mobileAnnualBadgeStyle
+    : isTablet
+      ? tabletAnnualBadgeStyle
+      : isLaptopCompact
+        ? compactAnnualBadgeStyle
+        : annualBadgeStyle;
+  const resolvedMetaStyle = isMobile
+    ? mobileMetaStyle
+    : isTablet
+      ? tabletMetaStyle
+      : isLaptopCompact
+        ? compactMetaStyle
+        : metaStyle;
+  const resolvedWarningStyle = isMobile
+    ? mobileWarningStyle
+    : isTablet
+      ? tabletWarningStyle
+      : isLaptopCompact
+        ? compactWarningStyle
+        : warningStyle;
+  const resolvedErrorStyle = isMobile
+    ? mobileErrorStyle
+    : isTablet
+      ? tabletErrorStyle
+      : isLaptopCompact
+        ? compactErrorStyle
+        : errorStyle;
+  const resolvedSuccessStyle = isMobile
+    ? mobileSuccessStyle
+    : isTablet
+      ? tabletSuccessStyle
+      : isLaptopCompact
+        ? compactSuccessStyle
+        : successStyle;
+  const resolvedCommerceStripStyle = isMobile
+    ? mobileCommerceStripStyle
+    : isTablet
+      ? tabletCommerceStripStyle
+      : isLaptopCompact
+        ? compactCommerceStripStyle
+        : commerceStripStyle;
+  const resolvedCommerceStripTextStyle = isMobile
+    ? mobileCommerceStripTextStyle
+    : isTablet
+      ? tabletCommerceStripTextStyle
+      : isLaptopCompact
+        ? compactCommerceStripTextStyle
+        : commerceStripTextStyle;
+  const resolvedPlanGridStyle = isMobile
+    ? mobilePlanGridStyle
+    : isTablet
+      ? tabletPlanGridStyle
+      : useThreeColumnCompactCards
+        ? compactPlanGridThreeColumnStyle
+        : isLaptopCompact
+          ? compactPlanGridStyle
+          : planGridStyle;
+  const resolvedGhostButtonStyle = isMobile
+    ? mobileGhostButtonStyle
+    : isTablet
+      ? tabletGhostButtonStyle
+      : isLaptopCompact
+        ? compactGhostButtonStyle
+        : ghostButtonStyle;
+  const resolvedSolidButtonStyle = isMobile
+    ? mobileSolidButtonStyle
+    : isTablet
+      ? tabletSolidButtonStyle
+      : isLaptopCompact
+        ? compactSolidButtonStyle
+        : solidButtonStyle;
+  const resolvedCurrentPlanButtonStyle = isMobile
+    ? mobileCurrentPlanButtonStyle
+    : isTablet
+      ? tabletCurrentPlanButtonStyle
+      : isLaptopCompact
+        ? compactCurrentPlanButtonStyle
+        : currentPlanButtonStyle;
+  const resolvedCheckoutButtonStyle = isMobile
+    ? mobileCheckoutButtonStyle
+    : isTablet
+      ? tabletCheckoutButtonStyle
+      : isLaptopCompact
+        ? compactCheckoutButtonStyle
+        : checkoutButtonStyle;
+  const resolvedAnnualFallbackStyle = isMobile
+    ? mobileAnnualFallbackStyle
+    : isTablet
+      ? tabletAnnualFallbackStyle
+      : isLaptopCompact
+        ? compactAnnualFallbackStyle
+        : annualFallbackStyle;
+
+  const useCompactPlanCard = isMobile || isTablet || isLaptopCompact;
+  const resolvedPlanTitleStyle = isMobile
+    ? mobilePlanTitleStyle
+    : isTablet
+      ? tabletPlanTitleStyle
+      : isLaptopCompact
+        ? compactPlanTitleStyle
+        : planTitleStyle;
+  const resolvedPopularBadgeStyle = isMobile
+    ? mobilePopularBadgeStyle
+    : isTablet
+      ? tabletPopularBadgeStyle
+      : isLaptopCompact
+        ? compactPopularBadgeStyle
+        : popularBadgeStyle;
+  const resolvedPlanSubtitleStyle = isMobile
+    ? mobilePlanSubtitleStyle
+    : isTablet
+      ? tabletPlanSubtitleStyle
+      : isLaptopCompact
+        ? compactPlanSubtitleStyle
+        : planSubtitleStyle;
+  const resolvedPriceStyle = isMobile
+    ? mobilePriceStyle
+    : isTablet
+      ? tabletPriceStyle
+      : isLaptopCompact
+        ? compactPriceStyle
+        : priceStyle;
+  const resolvedSavingsStyle = isMobile
+    ? mobileSavingsStyle
+    : isTablet
+      ? tabletSavingsStyle
+      : isLaptopCompact
+        ? compactSavingsStyle
+        : savingsStyle;
+  const resolvedPlanDescriptionStyle = isMobile
+    ? mobilePlanDescriptionStyle
+    : isTablet
+      ? tabletPlanDescriptionStyle
+      : isLaptopCompact
+        ? compactPlanDescriptionStyle
+        : planDescriptionStyle;
+  const resolvedFeatureListStyle = isMobile
+    ? mobileFeatureListStyle
+    : isTablet
+      ? tabletFeatureListStyle
+      : isLaptopCompact
+        ? compactFeatureListStyle
+        : featureListStyle;
+
+  const fitScaleStyle = isLaptopCompact && fitScale < 0.999
     ? {
         transform: `scale(${fitScale})`,
         transformOrigin: "top center",
@@ -368,17 +542,25 @@ export default function PricingPage() {
           return (
             <article
               key={plan.tier}
-              style={isLaptopCompact ? compactPlanCardStyle(isCurrentPlan, plan.recommended) : planCardStyle(isCurrentPlan, plan.recommended)}
+              style={
+                useCompactPlanCard
+                  ? isMobile
+                    ? mobilePlanCardStyle(isCurrentPlan, plan.recommended)
+                    : isTablet
+                      ? tabletPlanCardStyle(isCurrentPlan, plan.recommended)
+                      : compactPlanCardStyle(isCurrentPlan, plan.recommended)
+                  : planCardStyle(isCurrentPlan, plan.recommended)
+              }
             >
               <div style={planHeaderStyle}>
-                <h2 style={isLaptopCompact ? compactPlanTitleStyle : planTitleStyle}>{plan.name}</h2>
-                {plan.recommended ? <span style={isLaptopCompact ? compactPopularBadgeStyle : popularBadgeStyle}>Most Popular</span> : null}
+                <h2 style={resolvedPlanTitleStyle}>{plan.name}</h2>
+                {plan.recommended ? <span style={resolvedPopularBadgeStyle}>Most Popular</span> : null}
               </div>
-              <p style={isLaptopCompact ? compactPlanSubtitleStyle : planSubtitleStyle}>{plan.subtitle}</p>
-              <p style={isLaptopCompact ? compactPriceStyle : priceStyle}>{getPlanPriceLabel(plan.tier, billingInterval)}</p>
-              {isAnnual ? <p style={isLaptopCompact ? compactSavingsStyle : savingsStyle}>{plan.yearlySavingsLabel}</p> : null}
-              <p style={isLaptopCompact ? compactPlanDescriptionStyle : planDescriptionStyle}>{plan.description}</p>
-              <ul style={isLaptopCompact ? compactFeatureListStyle : featureListStyle}>
+              <p style={resolvedPlanSubtitleStyle}>{plan.subtitle}</p>
+              <p style={resolvedPriceStyle}>{getPlanPriceLabel(plan.tier, billingInterval)}</p>
+              {isAnnual ? <p style={resolvedSavingsStyle}>{plan.yearlySavingsLabel}</p> : null}
+              <p style={resolvedPlanDescriptionStyle}>{plan.description}</p>
+              <ul style={resolvedFeatureListStyle}>
                 {plan.highlights.map((item) => (
                   <li key={`${plan.tier}-${item}`}>{item}</li>
                 ))}
@@ -865,6 +1047,381 @@ const compactCurrentPlanButtonStyle = {
 };
 
 const compactAnnualFallbackStyle = {
+  ...annualFallbackStyle,
+  marginTop: 6,
+  fontSize: 11,
+};
+
+const tabletPageStyle = {
+  ...pageStyle,
+  padding: "14px min(2.8vw, 20px) 18px",
+};
+
+const tabletHeroStyle = {
+  ...heroStyle,
+  margin: "0 auto 10px",
+  padding: 14,
+  borderRadius: 14,
+};
+
+const tabletTitleStyle = {
+  ...titleStyle,
+  marginTop: 6,
+  marginBottom: 6,
+  fontSize: "clamp(1.35rem, 3.2vw, 1.9rem)",
+};
+
+const tabletSubtitleStyle = {
+  ...subtitleStyle,
+  fontSize: 13,
+  lineHeight: 1.36,
+};
+
+const tabletHeroActionsStyle = {
+  ...heroActionsStyle,
+  marginTop: 10,
+  gap: 7,
+};
+
+const tabletIntervalToggleStyle = {
+  ...intervalToggleStyle,
+  marginTop: 8,
+  gap: 6,
+};
+
+const tabletToggleButtonStyle = {
+  ...toggleButtonStyle,
+  padding: "6px 10px",
+  fontSize: 12,
+};
+
+const tabletToggleActiveStyle = {
+  ...toggleActiveStyle,
+  padding: "6px 10px",
+  fontSize: 12,
+};
+
+const tabletAnnualBadgeStyle = {
+  ...annualBadgeStyle,
+  padding: "4px 8px",
+  fontSize: 11,
+};
+
+const tabletGhostButtonStyle = {
+  ...ghostButtonStyle,
+  padding: "7px 10px",
+  fontSize: 12,
+};
+
+const tabletSolidButtonStyle = {
+  ...solidButtonStyle,
+  padding: "7px 10px",
+  fontSize: 12,
+};
+
+const tabletMetaStyle = {
+  ...metaStyle,
+  marginTop: 6,
+  fontSize: 12,
+  lineHeight: 1.45,
+  overflowWrap: "anywhere",
+};
+
+const tabletWarningStyle = {
+  ...warningStyle,
+  marginTop: 6,
+  fontSize: 12,
+};
+
+const tabletErrorStyle = {
+  ...errorStyle,
+  marginTop: 6,
+  fontSize: 12,
+};
+
+const tabletSuccessStyle = {
+  ...successStyle,
+  marginTop: 6,
+  fontSize: 12,
+};
+
+const tabletCommerceStripStyle = {
+  ...commerceStripStyle,
+  padding: "7px 8px",
+  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+  gap: 6,
+};
+
+const tabletCommerceStripTextStyle = {
+  ...commerceStripTextStyle,
+  fontSize: 11,
+};
+
+const tabletPlanGridStyle = {
+  ...planGridStyle,
+  margin: "8px auto 0",
+  gap: 8,
+  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+};
+
+const tabletPlanCardStyle = (isCurrentPlan, isRecommended) => ({
+  ...planCardStyle(isCurrentPlan, isRecommended),
+  padding: 10,
+  borderRadius: 12,
+});
+
+const tabletPlanTitleStyle = {
+  ...planTitleStyle,
+  fontSize: "1.02rem",
+};
+
+const tabletPopularBadgeStyle = {
+  ...popularBadgeStyle,
+  fontSize: 10,
+  padding: "2px 6px",
+};
+
+const tabletPlanSubtitleStyle = {
+  ...planSubtitleStyle,
+  marginTop: 3,
+  marginBottom: 4,
+  fontSize: 12,
+};
+
+const tabletPriceStyle = {
+  ...priceStyle,
+  marginBottom: 4,
+  fontSize: "1.24rem",
+};
+
+const tabletSavingsStyle = {
+  ...savingsStyle,
+  marginBottom: 5,
+  fontSize: 11,
+};
+
+const tabletPlanDescriptionStyle = {
+  ...planDescriptionStyle,
+  marginBottom: 6,
+  fontSize: 12,
+  lineHeight: 1.26,
+};
+
+const tabletFeatureListStyle = {
+  ...featureListStyle,
+  marginBottom: 8,
+  fontSize: 12,
+  lineHeight: 1.24,
+};
+
+const tabletCheckoutButtonStyle = {
+  ...checkoutButtonStyle,
+  padding: "7px 8px",
+  fontSize: 12,
+};
+
+const tabletCurrentPlanButtonStyle = {
+  ...currentPlanButtonStyle,
+  padding: "7px 8px",
+  fontSize: 12,
+};
+
+const tabletAnnualFallbackStyle = {
+  ...annualFallbackStyle,
+  marginTop: 6,
+  fontSize: 11,
+};
+
+const mobilePageStyle = {
+  ...pageStyle,
+  padding: "12px 12px 16px",
+};
+
+const mobileHeroStyle = {
+  ...heroStyle,
+  margin: "0 auto 8px",
+  padding: 12,
+  borderRadius: 12,
+};
+
+const mobileTitleStyle = {
+  ...titleStyle,
+  marginTop: 5,
+  marginBottom: 6,
+  fontSize: "clamp(1.18rem, 7vw, 1.45rem)",
+  lineHeight: 1.14,
+};
+
+const mobileSubtitleStyle = {
+  ...subtitleStyle,
+  fontSize: 12,
+  lineHeight: 1.34,
+};
+
+const mobileHeroActionsStyle = {
+  marginTop: 8,
+  display: "grid",
+  gridTemplateColumns: "1fr",
+  gap: 6,
+};
+
+const mobileIntervalToggleStyle = {
+  marginTop: 8,
+  display: "grid",
+  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+  gap: 6,
+  alignItems: "center",
+};
+
+const mobileToggleButtonStyle = {
+  ...toggleButtonStyle,
+  width: "100%",
+  textAlign: "center",
+  padding: "7px 8px",
+  fontSize: 12,
+};
+
+const mobileToggleActiveStyle = {
+  ...toggleActiveStyle,
+  width: "100%",
+  textAlign: "center",
+  padding: "7px 8px",
+  fontSize: 12,
+};
+
+const mobileAnnualBadgeStyle = {
+  ...annualBadgeStyle,
+  gridColumn: "1 / -1",
+  justifySelf: "start",
+  padding: "4px 8px",
+  fontSize: 10,
+};
+
+const mobileGhostButtonStyle = {
+  ...ghostButtonStyle,
+  width: "100%",
+  justifyContent: "center",
+  padding: "8px 10px",
+  fontSize: 12,
+};
+
+const mobileSolidButtonStyle = {
+  ...solidButtonStyle,
+  width: "100%",
+  justifyContent: "center",
+  padding: "8px 10px",
+  fontSize: 12,
+};
+
+const mobileMetaStyle = {
+  ...metaStyle,
+  marginTop: 6,
+  fontSize: 12,
+  lineHeight: 1.45,
+  overflowWrap: "anywhere",
+};
+
+const mobileWarningStyle = {
+  ...warningStyle,
+  marginTop: 6,
+  fontSize: 12,
+};
+
+const mobileErrorStyle = {
+  ...errorStyle,
+  marginTop: 6,
+  fontSize: 12,
+};
+
+const mobileSuccessStyle = {
+  ...successStyle,
+  marginTop: 6,
+  fontSize: 12,
+};
+
+const mobileCommerceStripStyle = {
+  ...commerceStripStyle,
+  padding: "7px 8px",
+  gridTemplateColumns: "1fr",
+  gap: 6,
+};
+
+const mobileCommerceStripTextStyle = {
+  ...commerceStripTextStyle,
+  fontSize: 11,
+};
+
+const mobilePlanGridStyle = {
+  ...planGridStyle,
+  margin: "8px auto 0",
+  gap: 8,
+  gridTemplateColumns: "1fr",
+};
+
+const mobilePlanCardStyle = (isCurrentPlan, isRecommended) => ({
+  ...planCardStyle(isCurrentPlan, isRecommended),
+  padding: 10,
+  borderRadius: 12,
+});
+
+const mobilePlanTitleStyle = {
+  ...planTitleStyle,
+  fontSize: "1rem",
+};
+
+const mobilePopularBadgeStyle = {
+  ...popularBadgeStyle,
+  fontSize: 10,
+  padding: "2px 6px",
+};
+
+const mobilePlanSubtitleStyle = {
+  ...planSubtitleStyle,
+  marginTop: 2,
+  marginBottom: 4,
+  fontSize: 12,
+};
+
+const mobilePriceStyle = {
+  ...priceStyle,
+  marginBottom: 4,
+  fontSize: "1.18rem",
+};
+
+const mobileSavingsStyle = {
+  ...savingsStyle,
+  marginBottom: 4,
+  fontSize: 11,
+};
+
+const mobilePlanDescriptionStyle = {
+  ...planDescriptionStyle,
+  marginBottom: 6,
+  fontSize: 12,
+  lineHeight: 1.25,
+};
+
+const mobileFeatureListStyle = {
+  ...featureListStyle,
+  marginBottom: 8,
+  fontSize: 12,
+  lineHeight: 1.24,
+  paddingLeft: 16,
+};
+
+const mobileCheckoutButtonStyle = {
+  ...checkoutButtonStyle,
+  padding: "8px 8px",
+  fontSize: 12,
+};
+
+const mobileCurrentPlanButtonStyle = {
+  ...currentPlanButtonStyle,
+  padding: "8px 8px",
+  fontSize: 12,
+};
+
+const mobileAnnualFallbackStyle = {
   ...annualFallbackStyle,
   marginTop: 6,
   fontSize: 11,
