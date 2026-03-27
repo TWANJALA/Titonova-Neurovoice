@@ -343,6 +343,55 @@ const styles = `
     font-size: 0.95rem;
   }
 
+  .testimonials {
+    margin-top: 18px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .testimonials h2 {
+    margin: 0 0 6px;
+    font-size: 1.15rem;
+  }
+
+  .testimonials-subcopy {
+    margin: 0 0 10px;
+    color: var(--ink-2);
+    font-size: 0.92rem;
+  }
+
+  .testimonial-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .testimonial {
+    border: 1px solid rgba(136, 181, 228, 0.34);
+    border-radius: 12px;
+    padding: 10px;
+    background: linear-gradient(165deg, rgba(12, 35, 60, 0.76), rgba(10, 27, 49, 0.82));
+  }
+
+  .testimonial blockquote {
+    margin: 0 0 10px;
+    color: #e7f6ff;
+    line-height: 1.45;
+    font-size: 0.93rem;
+  }
+
+  .testimonial cite {
+    display: block;
+    color: #9ed2f8;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
   .metrics {
     margin-top: 18px;
     display: grid;
@@ -492,6 +541,7 @@ const styles = `
 
     .hero { grid-template-columns: 1fr; }
     .feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .testimonial-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .metrics { grid-template-columns: 1fr; }
     .how-grid { grid-template-columns: 1fr; }
     .radar { min-height: 260px; }
@@ -502,6 +552,7 @@ const styles = `
     .topbar { padding-top: 18px; }
     .hero-card { padding: 20px; }
     .feature-grid { grid-template-columns: 1fr; }
+    .testimonial-grid { grid-template-columns: 1fr; }
     .headline { font-size: clamp(1.9rem, 10vw, 2.6rem); }
     .radar { min-height: 220px; }
   }
@@ -615,6 +666,39 @@ export default function LandingPage() {
             <h3>Caregiver Control</h3>
             <p>Import/export backups, tune goals, and personalize experience without complexity.</p>
           </article>
+        </section>
+
+        <section className="testimonials">
+          <h2>What Families and Therapists Say</h2>
+          <p className="testimonials-subcopy">
+            Real-world outcomes from homes, schools, and therapy settings.
+          </p>
+          <div className="testimonial-grid">
+            <article className="testimonial">
+              <blockquote>
+                "In two weeks, my son moved from single taps to full requests. We finally understand each other in hard moments."
+              </blockquote>
+              <cite>Parent Caregiver, Illinois</cite>
+            </article>
+            <article className="testimonial">
+              <blockquote>
+                "Setup took minutes. Suggestions match our routine and reduce communication breakdowns during transitions."
+              </blockquote>
+              <cite>Mother, School-Age AAC User</cite>
+            </article>
+            <article className="testimonial">
+              <blockquote>
+                "The dashboard gives me clear progress signals. I can adjust goals quickly and keep therapy aligned at home."
+              </blockquote>
+              <cite>Pediatric Speech Therapist</cite>
+            </article>
+            <article className="testimonial">
+              <blockquote>
+                "Quick phrases and emergency speak changed how safely we communicate in public, at pickup, and on busy days."
+              </blockquote>
+              <cite>Parent, Texas</cite>
+            </article>
+          </div>
         </section>
 
         <section className="metrics">
