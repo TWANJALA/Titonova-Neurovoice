@@ -252,7 +252,7 @@ const styles = `
     position: absolute;
     left: 20px;
     right: 20px;
-    bottom: min(calc(16px + 6in), 78%);
+    bottom: min(calc(16px + 5in), 78%);
     color: #e1f4ff;
     display: grid;
     gap: 8px;
