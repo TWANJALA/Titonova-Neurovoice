@@ -29,40 +29,51 @@ import {
 
 const AuthContext = createContext(null);
 
+const GUEST_ACCESS_STATE = {
+  user: null,
+  profile: null,
+  roles: [],
+  primaryRole: null,
+  homePath: resolveHomePath([]),
+  planTier: BILLING_TIERS.BASIC,
+  subscriptionStatus: "guest",
+  stripeCustomerId: "",
+};
+
 async function buildAccessState(user) {
   if (!user) {
-    return {
-      user: null,
-      profile: null,
-      roles: [],
-      primaryRole: null,
-      homePath: resolveHomePath([]),
-      planTier: BILLING_TIERS.BASIC,
-      subscriptionStatus: "guest",
-      stripeCustomerId: "",
-    };
+    return GUEST_ACCESS_STATE;
   }
 
-  const tokenResult = await getIdTokenResult(user);
-
-  let profile = null;
-  try {
-    const userRef = doc(db, "users", user.uid);
-    const profileSnapshot = await getDoc(userRef);
-    profile = profileSnapshot.exists() ? profileSnapshot.data() : null;
-  } catch (error) {
-    console.error("Failed to fetch profile data:", error);
-  }
-
-  let serverBilling = null;
-  try {
-    const serverStatus = await getSubscriptionStatus();
-    if (serverStatus?.billing && typeof serverStatus.billing === "object") {
-      serverBilling = serverStatus.billing;
+  const tokenResultPromise = getIdTokenResult(user);
+  const profilePromise = (async () => {
+    try {
+      const userRef = doc(db, "users", user.uid);
+      const profileSnapshot = await getDoc(userRef);
+      return profileSnapshot.exists() ? profileSnapshot.data() : null;
+    } catch (error) {
+      console.error("Failed to fetch profile data:", error);
+      return null;
     }
-  } catch {
-    // Billing status falls back to Firestore profile/claims when billing API is unavailable.
-  }
+  })();
+  const billingPromise = (async () => {
+    try {
+      const serverStatus = await getSubscriptionStatus();
+      if (serverStatus?.billing && typeof serverStatus.billing === "object") {
+        return serverStatus.billing;
+      }
+      return null;
+    } catch {
+      // Billing status falls back to Firestore profile/claims when billing API is unavailable.
+      return null;
+    }
+  })();
+
+  const [tokenResult, profile, serverBilling] = await Promise.all([
+    tokenResultPromise,
+    profilePromise,
+    billingPromise,
+  ]);
 
   const mergedProfile = serverBilling
     ? {
@@ -123,14 +134,7 @@ export function AuthProvider({ children }) {
     if (!auth) {
       setState({
         loading: false,
-        user: null,
-        profile: null,
-        roles: [],
-        primaryRole: null,
-        homePath: resolveHomePath([]),
-        planTier: BILLING_TIERS.BASIC,
-        subscriptionStatus: "guest",
-        stripeCustomerId: "",
+        ...GUEST_ACCESS_STATE,
         error: new Error("Firebase auth is unavailable in this environment."),
       });
       return () => {
@@ -156,7 +160,7 @@ export function AuthProvider({ children }) {
           error: prev.error ?? new Error("Auth initialization timed out; running in guest mode."),
         };
       });
-    }, 7000);
+    }, 2500);
 
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (!active) return;
@@ -164,8 +168,6 @@ export function AuthProvider({ children }) {
         window.clearTimeout(failSafeTimer);
         failSafeTimer = null;
       }
-
-      setState((prev) => ({ ...prev, loading: true, error: null }));
 
       try {
         const nextAccess = await buildAccessState(currentUser);
