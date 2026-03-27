@@ -254,8 +254,28 @@ const styles = `
     right: 20px;
     bottom: 16px;
     color: #e1f4ff;
-    font-size: 0.95rem;
-    line-height: 1.5;
+    display: grid;
+    gap: 6px;
+  }
+
+  .radar-title {
+    margin: 0;
+    font-size: clamp(1.15rem, 2.2vw, 1.45rem);
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #f5fdff;
+    text-shadow: 0 0 12px rgba(101, 234, 198, 0.45);
+    animation: intelligenceGlow 2.1s ease-in-out infinite;
+  }
+
+  .radar-detail {
+    margin: 0;
+    font-size: 0.98rem;
+    line-height: 1.55;
+    color: #d2e9fb;
+    font-weight: 700;
+    animation: intelligenceRise 900ms 120ms ease both;
   }
 
   .feature-grid {
@@ -371,6 +391,22 @@ const styles = `
     100% { opacity: 0; }
   }
 
+  @keyframes intelligenceGlow {
+    0%, 100% {
+      text-shadow: 0 0 10px rgba(101, 234, 198, 0.36);
+      transform: translateY(0);
+    }
+    50% {
+      text-shadow: 0 0 18px rgba(101, 234, 198, 0.6);
+      transform: translateY(-1px);
+    }
+  }
+
+  @keyframes intelligenceRise {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
   @media (max-width: 900px) {
     .topbar {
       flex-direction: column;
@@ -466,9 +502,10 @@ export default function LandingPage() {
             <div className="pulse" />
             <div className="pulse two" />
             <div className="radar-copy">
-              Live Intelligence
-              <br />
-              Suggests next words, tracks progress, and learns each child&apos;s voice patterns over time.
+              <h3 className="radar-title">Live Intelligence</h3>
+              <p className="radar-detail">
+                Suggests next words, tracks progress, and learns each child&apos;s voice patterns over time.
+              </p>
             </div>
           </aside>
         </section>
