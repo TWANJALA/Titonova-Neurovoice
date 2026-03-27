@@ -3422,6 +3422,7 @@ export default function ParentPage() {
   const [localSuggestionCache, setLocalSuggestionCache] = useState({});
   const [syncStatus, setSyncStatus] = useState("offline");
   const [lastSyncedAt, setLastSyncedAt] = useState(null);
+  const [interactionError, setInteractionError] = useState("");
   const [openWhyKey, setOpenWhyKey] = useState("");
   const holdSelectTimeoutRef = useRef(null);
   const phraseHoldTimeoutRef = useRef(null);
@@ -5079,7 +5080,7 @@ export default function ParentPage() {
     });
 
     if (autoSpeak) {
-      speak(validWords.map((word) => word.text).join(" "), {
+      void speak(validWords.map((word) => word.text).join(" "), {
         lang: speechLanguage,
         rate: speechRate,
         pitch: speechPitch,
@@ -5088,7 +5089,20 @@ export default function ParentPage() {
         autoDetectVoice,
         ttsProvider,
         voiceURI: selectedVoiceURI,
+      }).catch((error) => {
+        console.error("Auto-speak failed:", error);
+        setInteractionError("Auto-speak failed. Switching to manual speak mode for this session.");
       });
+    }
+  };
+
+  const runSafeWordInteraction = (action, fallbackMessage) => {
+    try {
+      setInteractionError("");
+      action();
+    } catch (error) {
+      console.error("Word interaction failed:", error);
+      setInteractionError(fallbackMessage);
     }
   };
 
@@ -5138,8 +5152,13 @@ export default function ParentPage() {
   const startHoldSelect = (word) => {
     clearHoldSelectTimer();
     holdSelectTimeoutRef.current = window.setTimeout(() => {
-      addWord(word);
-      handleWordTapFeedback(word);
+      runSafeWordInteraction(
+        () => {
+          addWord(word);
+          handleWordTapFeedback(word);
+        },
+        "Hold-to-select failed. Please try again."
+      );
       holdSelectTimeoutRef.current = null;
     }, HOLD_TO_SELECT_MS);
   };
@@ -5189,13 +5208,18 @@ export default function ParentPage() {
             wordLongPressTriggeredRef.current = false;
             return;
           }
-          addWord(word);
-          handleWordTapFeedback(word);
-          clearWordLongPressTimer();
-          if (sentence.length === 0) {
-            setAlternateWordLabel("");
-            setAlternateWordSuggestions([]);
-          }
+          runSafeWordInteraction(
+            () => {
+              addWord(word);
+              handleWordTapFeedback(word);
+              clearWordLongPressTimer();
+              if (sentence.length === 0) {
+                setAlternateWordLabel("");
+                setAlternateWordSuggestions([]);
+              }
+            },
+            "Word tap failed. Please tap again."
+          );
         },
         onMouseDown: () => startWordLongPress(word),
         onMouseUp: clearWordLongPressTimer,
@@ -5220,8 +5244,13 @@ export default function ParentPage() {
 
   const selectScannedWord = () => {
     if (!scannedWord) return;
-    addWord(scannedWord);
-    handleWordTapFeedback(scannedWord);
+    runSafeWordInteraction(
+      () => {
+        addWord(scannedWord);
+        handleWordTapFeedback(scannedWord);
+      },
+      "Scan selection failed. Please try again."
+    );
   };
 
   const recordSpokenSentence = (text, options = {}) => {
@@ -5457,7 +5486,7 @@ export default function ParentPage() {
     const tokens = tokenizeText(text);
     const tone = triggerSpeakReaction(text, { urgencyScore: urgencySignal.score });
 
-    speak(text, {
+    void speak(text, {
       lang: speechLanguage,
       rate: speechRate,
       pitch: speechPitch,
@@ -5467,6 +5496,9 @@ export default function ParentPage() {
       ttsProvider,
       voiceURI: selectedVoiceURI,
       tone,
+    }).catch((error) => {
+      console.error("Speak failed:", error);
+      setInteractionError("Speak failed. Check voice/translation settings and try again.");
     });
     const elapsedMs =
       Number.isFinite(Number(sentenceBuildStartedAt)) && Number(sentenceBuildStartedAt) > 0
@@ -6550,6 +6582,9 @@ export default function ParentPage() {
             {activePlan.name} ({activePlan.priceLabel})
           </p>
           <p style={syncStatusStyle}>{syncSummary}</p>
+          {interactionError ? (
+            <p style={interactionErrorStyle}>{interactionError}</p>
+          ) : null}
         </div>
 
         <div style={{ display: "flex", gap: 4, alignItems: "center", flexWrap: "wrap", flex: "1 1 220px", justifyContent: "flex-end" }}>
@@ -8320,6 +8355,14 @@ const syncStatusStyle = {
   color: "#c8e4ff",
   border: "1px solid rgba(138, 177, 216, 0.45)",
   background: "rgba(11, 32, 53, 0.62)",
+};
+
+const interactionErrorStyle = {
+  marginTop: 4,
+  marginBottom: 0,
+  color: "#ffc8d2",
+  fontSize: 11,
+  lineHeight: 1.25,
 };
 
 const linkPillStyle = {

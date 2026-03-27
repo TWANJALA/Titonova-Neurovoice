@@ -118,9 +118,52 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     let active = true;
+    let failSafeTimer = null;
+
+    if (!auth) {
+      setState({
+        loading: false,
+        user: null,
+        profile: null,
+        roles: [],
+        primaryRole: null,
+        homePath: resolveHomePath([]),
+        planTier: BILLING_TIERS.BASIC,
+        subscriptionStatus: "guest",
+        stripeCustomerId: "",
+        error: new Error("Firebase auth is unavailable in this environment."),
+      });
+      return () => {
+        active = false;
+      };
+    }
+
+    failSafeTimer = window.setTimeout(() => {
+      if (!active) return;
+      setState((prev) => {
+        if (!prev.loading) return prev;
+        return {
+          ...prev,
+          loading: false,
+          user: null,
+          profile: null,
+          roles: [],
+          primaryRole: null,
+          homePath: resolveHomePath([]),
+          planTier: BILLING_TIERS.BASIC,
+          subscriptionStatus: "guest",
+          stripeCustomerId: "",
+          error: prev.error ?? new Error("Auth initialization timed out; running in guest mode."),
+        };
+      });
+    }, 7000);
 
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (!active) return;
+      if (failSafeTimer) {
+        window.clearTimeout(failSafeTimer);
+        failSafeTimer = null;
+      }
 
       setState((prev) => ({ ...prev, loading: true, error: null }));
 
@@ -147,6 +190,9 @@ export function AuthProvider({ children }) {
 
     return () => {
       active = false;
+      if (failSafeTimer) {
+        window.clearTimeout(failSafeTimer);
+      }
       unsubscribe();
     };
   }, []);
