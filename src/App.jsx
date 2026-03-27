@@ -6,10 +6,10 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { ROLES } from "./constants/roles";
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
+import ParentPage from "./pages/ParentPage";
 import SignupPage from "./pages/SignupPage";
 import UnauthorizedPage from "./pages/UnauthorizedPage";
 
-const ParentPage = lazy(() => import("./pages/ParentPage"));
 const TherapistPage = lazy(() => import("./pages/TherapistPage"));
 const AdminPage = lazy(() => import("./pages/AdminPage"));
 const McoDashboard = lazy(() => import("./pages/McoDashboard"));
