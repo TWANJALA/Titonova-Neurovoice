@@ -3049,40 +3049,49 @@ function getAutoSentences({
     }
   }
 
-  const productionRank = rankBrainCandidates({
-    candidates: adjusted.map((entry) => ({
-      sentence: entry.sentence,
-      tapCount: tokenizeText(entry.sentence).length,
-    })),
-    context: {
-      recentSentences: history.slice(-30),
-      timeOfDay,
-      currentSentence: currentTokens,
-      environment,
-      goal: therapyGoal,
-      urgency:
-        detectedIntent.intent === AUTO_SENTENCE_INTENTS.NEED ||
-        ["help", "hurt", "stop", "emergency"].includes(triggerToken),
-    },
-    intent: detectedIntent.intent,
-    model: {
-      phraseFrequency: learningState.acceptedCounts,
-      acceptedCounts: learningState.acceptedCounts,
-      ignoredCounts: learningState.ignoredCounts,
-      transitions: wordTransitions,
-      wordFrequency: usageCounts,
-      timePatterns: {
-        [timeOfDay]: [...twinRoutineSet],
+  const safeEnvironment = Object.values(AUTO_SENTENCE_ENVIRONMENTS).includes(environment)
+    ? environment
+    : AUTO_SENTENCE_ENVIRONMENTS.HOME;
+
+  let productionRank = [];
+  try {
+    productionRank = rankBrainCandidates({
+      candidates: adjusted.map((entry) => ({
+        sentence: entry.sentence,
+        tapCount: tokenizeText(entry.sentence).length,
+      })),
+      context: {
+        recentSentences: history.slice(-30),
+        timeOfDay,
+        currentSentence: currentTokens,
+        environment: safeEnvironment,
+        goal: therapyGoal,
+        urgency:
+          detectedIntent.intent === AUTO_SENTENCE_INTENTS.NEED ||
+          ["help", "hurt", "stop", "emergency"].includes(triggerToken),
       },
-      environmentPatterns: {
-        [environment]: [
-          ...(SITUATION_CONTEXT_KEYWORDS[contextStack.situation] ?? []),
-          ...twinRoutineSet,
-        ],
+      intent: detectedIntent.intent,
+      model: {
+        phraseFrequency: learningState.acceptedCounts,
+        acceptedCounts: learningState.acceptedCounts,
+        ignoredCounts: learningState.ignoredCounts,
+        transitions: wordTransitions,
+        wordFrequency: usageCounts,
+        timePatterns: {
+          [timeOfDay]: [...twinRoutineSet],
+        },
+        environmentPatterns: {
+          [safeEnvironment]: [
+            ...(SITUATION_CONTEXT_KEYWORDS[contextStack.situation] ?? []),
+            ...twinRoutineSet,
+          ],
+        },
       },
-    },
-    limit,
-  });
+      limit,
+    });
+  } catch (error) {
+    console.warn("Auto-sentence production ranking failed; falling back to calibrated suggestions.", error);
+  }
   const productionByPhrase = productionRank.reduce((lookup, entry) => {
     lookup[normalizeToken(entry.sentence)] = Number(entry.score ?? 0);
     return lookup;
