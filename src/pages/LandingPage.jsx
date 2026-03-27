@@ -255,7 +255,28 @@ const styles = `
     bottom: min(calc(16px + 7in), 78%);
     color: #e1f4ff;
     display: grid;
-    gap: 6px;
+    gap: 8px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(138, 199, 239, 0.42);
+    background: linear-gradient(160deg, rgba(9, 33, 57, 0.78), rgba(8, 23, 45, 0.66));
+    box-shadow: 0 12px 24px rgba(3, 13, 26, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(3px);
+    overflow: hidden;
+    animation: intelligenceFloat 5s ease-in-out infinite;
+  }
+
+  .radar-copy::before {
+    content: "";
+    position: absolute;
+    top: -15%;
+    left: -45%;
+    width: 42%;
+    height: 130%;
+    background: linear-gradient(110deg, transparent 0%, rgba(161, 255, 228, 0.22) 50%, transparent 100%);
+    transform: skewX(-20deg);
+    animation: intelligenceSweep 3.9s ease-in-out infinite;
+    pointer-events: none;
   }
 
   .radar-title {
@@ -264,9 +285,13 @@ const styles = `
     font-weight: 900;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: #f5fdff;
-    text-shadow: 0 0 12px rgba(101, 234, 198, 0.45);
-    animation: intelligenceGlow 2.1s ease-in-out infinite;
+    background: linear-gradient(90deg, #f4fdff 0%, #9deaff 42%, #8fffd8 76%, #f4fdff 100%);
+    background-size: 220% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 12px rgba(101, 234, 198, 0.22);
+    animation: intelligenceGlow 2.2s ease-in-out infinite, intelligenceShimmer 4.8s linear infinite;
   }
 
   .radar-detail {
@@ -275,7 +300,8 @@ const styles = `
     line-height: 1.55;
     color: #d2e9fb;
     font-weight: 700;
-    animation: intelligenceRise 900ms 120ms ease both;
+    text-shadow: 0 0 8px rgba(98, 186, 245, 0.18);
+    animation: intelligenceRise 900ms 120ms ease both, intelligenceBreathe 4.4s 700ms ease-in-out infinite;
   }
 
   .feature-grid {
@@ -405,6 +431,34 @@ const styles = `
   @keyframes intelligenceRise {
     from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes intelligenceShimmer {
+    0% { background-position: 200% 50%; }
+    100% { background-position: -20% 50%; }
+  }
+
+  @keyframes intelligenceBreathe {
+    0%, 100% {
+      opacity: 0.9;
+      transform: translateY(0);
+    }
+    50% {
+      opacity: 1;
+      transform: translateY(-1px);
+    }
+  }
+
+  @keyframes intelligenceFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+
+  @keyframes intelligenceSweep {
+    0% { left: -50%; opacity: 0; }
+    18% { opacity: 0.85; }
+    56% { opacity: 0.6; }
+    100% { left: 130%; opacity: 0; }
   }
 
   @media (max-width: 900px) {
