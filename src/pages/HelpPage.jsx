@@ -207,6 +207,12 @@ export default function HelpPage() {
           <p style={subtitleStyle}>
             Every major feature with practical usage steps for families, therapists, and admin teams.
           </p>
+          <p style={supportLineStyle}>
+            Direct support: <strong>Titus Wanjala</strong> •{" "}
+            <a href="tel:+15157790523" style={supportLinkStyle}>
+              515-779-0523
+            </a>
+          </p>
           <div style={actionRowStyle}>
             <Link to="/app" style={primaryLinkStyle}>
               Open Workspace
@@ -287,6 +293,18 @@ const subtitleStyle = {
   margin: 0,
   color: "#b6d3ea",
   lineHeight: 1.45,
+};
+
+const supportLineStyle = {
+  margin: "8px 0 0",
+  color: "#d9ecfc",
+  fontSize: 13,
+};
+
+const supportLinkStyle = {
+  color: "#97ffdb",
+  textDecoration: "none",
+  borderBottom: "1px dashed rgba(151, 255, 219, 0.6)",
 };
 
 const actionRowStyle = {

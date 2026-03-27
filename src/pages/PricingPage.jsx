@@ -307,6 +307,12 @@ export default function PricingPage() {
             Contact Sales
           </a>
         </div>
+        <p style={resolvedMetaStyle}>
+          Direct contact: <strong>Titus Wanjala</strong> •{" "}
+          <a href="tel:+15157790523" style={phoneLinkStyle}>
+            515-779-0523
+          </a>
+        </p>
         <div style={resolvedIntervalToggleStyle}>
           <button
             type="button"
@@ -515,6 +521,12 @@ const metaStyle = {
   marginBottom: 0,
   color: "#9cbcdf",
   fontSize: 14,
+};
+
+const phoneLinkStyle = {
+  color: "#9dffd8",
+  textDecoration: "none",
+  borderBottom: "1px dashed rgba(157, 255, 216, 0.62)",
 };
 
 const warningStyle = {
