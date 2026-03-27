@@ -252,7 +252,7 @@ const styles = `
     position: absolute;
     left: 20px;
     right: 20px;
-    bottom: 16px;
+    bottom: calc(16px + 2in);
     color: #e1f4ff;
     display: grid;
     gap: 6px;
@@ -419,6 +419,7 @@ const styles = `
     .metrics { grid-template-columns: 1fr; }
     .how-grid { grid-template-columns: 1fr; }
     .radar { min-height: 260px; }
+    .radar-copy { bottom: 20px; }
   }
 
   @media (max-width: 620px) {
