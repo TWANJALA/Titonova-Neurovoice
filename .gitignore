@@ -11,3 +11,4 @@ pnpm-debug.log*
 coverage/
 .vite/
 .vercel/
+.env*.local
