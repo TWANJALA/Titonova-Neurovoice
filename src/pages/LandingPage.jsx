@@ -147,7 +147,7 @@ const styles = `
   .headline {
     margin: 0;
     line-height: 1.03;
-    font-size: clamp(2rem, 5vw, 4.2rem);
+    font-size: clamp(1rem, 2.5vw, 2.1rem);
     font-weight: 700;
     text-wrap: balance;
   }
