@@ -93,9 +93,15 @@ const styles = `
   .brand {
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    font-weight: 700;
-    font-size: 0.85rem;
-    color: #cbdef1;
+    font-weight: 900;
+    font-size: clamp(0.95rem, 1.65vw, 1.25rem);
+    background: linear-gradient(90deg, #f3fbff 0%, #9ed4ff 38%, #8dffd8 74%, #f3fbff 100%);
+    background-size: 240% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 14px rgba(105, 210, 255, 0.22);
+    animation: brandShimmer 5.6s linear infinite, brandPulse 2.3s ease-in-out infinite;
   }
 
   .ghost-link {
@@ -459,6 +465,22 @@ const styles = `
     18% { opacity: 0.85; }
     56% { opacity: 0.6; }
     100% { left: 130%; opacity: 0; }
+  }
+
+  @keyframes brandShimmer {
+    0% { background-position: 200% 50%; }
+    100% { background-position: -20% 50%; }
+  }
+
+  @keyframes brandPulse {
+    0%, 100% {
+      text-shadow: 0 0 10px rgba(105, 210, 255, 0.2);
+      transform: translateY(0);
+    }
+    50% {
+      text-shadow: 0 0 20px rgba(105, 210, 255, 0.45);
+      transform: translateY(-1px);
+    }
   }
 
   @media (max-width: 900px) {
